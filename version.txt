@@ -1,2 +1,1 @@
-7
-https://github.com/kuro608/vraith-update/releases/download/v7/cs2.vraith.V3.dll
+8
