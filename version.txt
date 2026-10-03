@@ -1,2 +1,2 @@
-12
-https://github.com/kuro608/vraith-update/releases/download/v12/cs2.dll
+13
+https://github.com/kuro608/vraith-update/releases/download/v13/cs2.dll
