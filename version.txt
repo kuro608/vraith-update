@@ -1,2 +1,2 @@
-18
-https://github.com/kuro608/vraith-update/releases/download/v18/cs2.vraith.V18.dll
+19
+https://github.com/kuro608/vraith-update/releases/download/v19/cs2.vraith.V19.dll
