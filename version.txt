@@ -1,2 +1,2 @@
-24
-https://github.com/kuro608/vraith-update/releases/download/v24/cs2.vraith.V24.dll
+25
+https://github.com/kuro608/vraith-update/releases/download/v25/cs2.vraith.V25.dll
