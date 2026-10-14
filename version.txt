@@ -1,2 +1,2 @@
 54
-https://github.com/kuro608/vraith-update/releases/download/v54/cs2.dll
+https://github.com/kuro608/vraith-update/releases/download/v54/cs2.vraith.V3.dll
