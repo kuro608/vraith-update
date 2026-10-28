@@ -1,0 +1,177 @@
+// ============================================================
+// VRAITH — Section 9 : ABYSS  (Outro cube + fin)
+// ============================================================
+// BPM     : 200  |  Beat = 0.300s = 72 frames
+// Mode    : Cube x1 (2340-2500) → Cube x0.5 (2500-2600, outro)
+// vX x1   : 10.386 b/s  |  1 beat = 3.116 bl ≈ 3 blocs
+// vX x0.5 : 8.372 b/s   |  1 beat = 2.512 bl ≈ 3 blocs (très lent)
+// Caractère : résolution, satisfaction, "GG screen" coming
+// Début   : X=2340 (suite Section 8)
+// ============================================================
+
+let BEAT = 0.3
+let OX   = 195
+let GY   = 105
+let G    = 30
+
+let S    = 2340
+
+
+// ============================================================
+// COULEUR — doré (victoire imminente)
+// ============================================================
+$.add(obj {
+    OBJ_ID: 899,
+    X: S*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1000g,
+    R: 30, G_VAL: 25, B: 0,
+    DURATION: 1.2
+})
+$.add(obj {
+    OBJ_ID: 899,
+    X: S*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1g,
+    R: 255, G_VAL: 220, B: 50,
+    DURATION: 1.2
+})
+
+// Pulse doré lent
+for i in 0..50 {
+    wait(BEAT * 3 * i)  // 1 pulse par 3 beats
+    1000c.pulse(r=40, g=35, b=0, fade_out=0.8, exclusive=false)
+}
+
+
+// ============================================================
+// SOL CONTINU Section 9
+// ============================================================
+for i in 2340..2601 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY })
+}
+
+
+// ============================================================
+// PHASE M1 : Cube x1 — Décompression (blocs 2340-2440)
+// Plafond haut, obstacles rares, musique qui descend
+// Joueur respire après 7 sections extrêmes
+// ============================================================
+
+// Plafond très haut : Y=8
+for i in 2340..2440 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+8*G })
+}
+
+// Obstacles symboliques (1 tous les 4 beats = 12 blocs)
+// Rappel des sections précédentes : cube / ship / wave / robot
+// Cube bloc simple (Section 1)
+$.add(obj { OBJ_ID: 1, X: 2346*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 2348*G+OX, Y: GY+G })
+
+// Bloc double (Section 2 style)
+$.add(obj { OBJ_ID: 1, X: 2358*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 1, X: 2358*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 8, X: 2360*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 2360*G+OX, Y: GY+3*G })
+
+// Escalier (Section 4 style)
+$.add(obj { OBJ_ID: 1, X: 2370*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 1, X: 2371*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 1, X: 2371*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 8, X: 2373*G+OX, Y: GY+G })
+
+// Triple spike (signature VRAITH)
+$.add(obj { OBJ_ID: 8, X: 2382*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 2385*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 2388*G+OX, Y: GY+G })
+
+// Orbe jaune isolé (clin d'oeil)
+$.add(obj { OBJ_ID: 36, X: 2400*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8,  X: 2403*G+OX, Y: GY+G })
+
+// Bloc + spike (simple et propre)
+$.add(obj { OBJ_ID: 1, X: 2412*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 2414*G+OX, Y: GY+G })
+
+$.add(obj { OBJ_ID: 1, X: 2422*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 1, X: 2422*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 8, X: 2424*G+OX, Y: GY+G })
+
+
+// ============================================================
+// PHASE M2 : Cube x1 → x0.5 — Outro (blocs 2440-2600)
+// Ralentissement progressif, obstacles de plus en plus rares
+// Les 60 derniers blocs : 1 seul obstacle symbolique
+// ============================================================
+
+// Portail x0.5 (ralentissement)
+$.add(obj { OBJ_ID: 200, X: 2500*G+OX, Y: GY+G })  // Speed x0.5 portal
+
+// Plafond qui monte progressivement (horizon qui s'ouvre)
+for i in 2440..2500 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+(8 + (i-2440)/10)*G })
+}
+// 2440..2500 → plafond de Y=8 à Y=14
+
+// Quelques blocs rappel (1 tous les 20 blocs)
+$.add(obj { OBJ_ID: 8, X: 2450*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 2468*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 1, X: 2485*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 2487*G+OX, Y: GY+G })
+
+// Depuis le portail x0.5 : tout ralentit
+// Dernier obstacle : triple spike (3 blocs = 1+ beat à x0.5)
+$.add(obj { OBJ_ID: 8, X: 2520*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 2523*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 2526*G+OX, Y: GY+G })
+
+// DERNIER BLOC : 1 spike seul à mi-parcours x0.5
+$.add(obj { OBJ_ID: 8, X: 2560*G+OX, Y: GY+G })
+
+// Les 40 derniers blocs (2560-2600) : VIDE
+// Le joueur court, la musique finit, la victoire arrive
+
+// ============================================================
+// MARKER FIN : Texte END à bloc 2595
+// ============================================================
+// (Trigger texte — OBJ_ID varie selon version GD)
+// Panneau "GG" via color trigger + text object si disponible
+
+// Flash blanc final (beat de fin)
+$.add(obj {
+    OBJ_ID: 899,
+    X: 2590*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1000g,
+    R: 255, G_VAL: 255, B: 255,
+    DURATION: 0.5
+})
+$.add(obj {
+    OBJ_ID: 899,
+    X: 2595*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1000g,
+    R: 0, G_VAL: 0, B: 0,
+    DURATION: 2.0
+})
+$.add(obj {
+    OBJ_ID: 899,
+    X: 2595*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1g,
+    R: 0, G_VAL: 0, B: 0,
+    DURATION: 2.0
+})
+
+// ============================================================
+// FIN VRAITH — ABYSS (X=2340-2600)
+// Total : ~2600 blocs — durée ~167s à vitesse moyenne
+// BPM 200 — ~556 beats — ~6.9 minutes
+// ============================================================
+// Structure complète :
+//   S1 AWAKENING  : Cube x1/x2/x3   (  0- 258 blocs,  ~16s)
+//   S2 DESCENT    : Ship x3          (258- 537 blocs,  ~18s)
+//   S3 CORRUPTION : Wave x2/x3       (537- 808 blocs,  ~17s)
+//   S4 APEX       : Cube+Robot x2    (808-1050 blocs,  ~15s)
+//   S5 ECLIPSE    : Ship+Wave x3     (1050-1320 blocs, ~17s)
+//   S6 VOID       : UFO+Ball x2      (1320-1648 blocs, ~25s)
+//   S7 STORM      : Wave x4          (1648-1970 blocs, ~17s)
+//   S8 REQUIEM    : Multi-mode       (1970-2340 blocs, ~36s)
+//   S9 ABYSS      : Outro x1/x0.5   (2340-2600 blocs, ~26s)
+// ============================================================

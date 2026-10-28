@@ -1,0 +1,227 @@
+// ============================================================
+// VRAITH — Section 6 : VOID  (UFO x2 + Ball x2)
+// ============================================================
+// BPM     : 200  |  Beat = 0.300s = 72 frames
+// Mode    : UFO x2 (blocs 1320-1500) → Ball x2 (1500-1650)
+// vX x2   : 12.914 b/s  |  1 beat = 3.874 bl ≈ 4 blocs
+// UFO x2  : v0=CUBE_V0*(15.6/15.6) scaled ≈ 0.84bl hauteur (mini) / 2.2bl (normal)
+//           Sauts répétés possible : délai minimal ~10 frames
+// Ball x2 : v0=CUBE_V0*0.6=630 u/s, g=3533 u/s² → H≈1.68bl
+//           Ball : inversion gravité à chaque contact sol/plafond
+// Début   : X=1320 (suite Section 5)
+// ============================================================
+
+let BEAT = 0.3
+let OX   = 195
+let GY   = 105
+let G    = 30
+
+let S    = 1320
+
+
+// ============================================================
+// COULEUR — violet profond (VOID)
+// ============================================================
+$.add(obj {
+    OBJ_ID: 899,
+    X: S*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1000g,
+    R: 5, G_VAL: 0, B: 15,
+    DURATION: 0.4
+})
+$.add(obj {
+    OBJ_ID: 899,
+    X: S*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1g,
+    R: 120, G_VAL: 0, B: 200,
+    DURATION: 0.4
+})
+
+for i in 0..100 {
+    wait(BEAT * i)
+    1000c.pulse(r=10, g=0, b=30, fade_out=0.2, exclusive=false)
+}
+
+
+// ============================================================
+// SOL ET PLAFOND CONTINU Section 6
+// ============================================================
+for i in 1320..1651 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY })
+}
+
+
+// ============================================================
+// PHASE I1 : UFO x2 — Intro (blocs 1320-1400)
+// UFO : tap = saut simple, hold = multiple sauts
+// Couloir Y=5 → Y=4, obstacles en colonne
+// ============================================================
+
+for i in 1320..1380 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G })
+}
+for i in 1380..1500 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+4*G })
+}
+
+// Colonnes d'obstacles UFO : bloc sol + bloc plafond alternant
+// Joueur doit passer entre les deux
+$.add(obj { OBJ_ID: 1, X: 1325*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 1, X: 1325*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 8, X: 1326*G+OX, Y: GY+3*G })  // Spike
+
+$.add(obj { OBJ_ID: 1, X: 1329*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 1, X: 1329*G+OX, Y: GY+4*G })
+$.add(obj { OBJ_ID: 8, X: 1330*G+OX, Y: GY+G })    // Spike
+
+// Série de colonnes (1 beat = 4 blocs)
+for j in 0..8 {
+    let bx = 1333 + j*4
+    if j % 2 == 0 {
+        // Colonne basse (sol) : joueur monte
+        $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+G })
+        $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+2*G })
+        $.add(obj { OBJ_ID: 8, X: (bx+1)*G+OX, Y: GY+3*G })
+    } else {
+        // Colonne haute (plafond) : joueur descend
+        $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+3*G })
+        $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+4*G })
+        $.add(obj { OBJ_ID: 8, X: (bx+1)*G+OX, Y: GY+G })
+    }
+}
+// Fin à 1333 + 8*4 = 1365
+
+
+// ============================================================
+// PHASE I2 : UFO x2 — Séquence Rings (blocs 1365-1500)
+// Orbes positionnés précisément, spikes entre les orbes
+// UFO peut enchaîner sauts rapides (hold) ou saut unique (tap)
+// ============================================================
+
+// Pattern ring : 3 orbes en série avec spikes intercalés
+$.add(obj { OBJ_ID: 36, X: 1368*G+OX, Y: GY+2*G })  // Orbe jaune
+$.add(obj { OBJ_ID: 8,  X: 1370*G+OX, Y: GY+G })     // Spike sol
+$.add(obj { OBJ_ID: 36, X: 1372*G+OX, Y: GY+3*G })  // Orbe jaune haut
+$.add(obj { OBJ_ID: 8,  X: 1374*G+OX, Y: GY+3*G })   // Spike plafond
+
+$.add(obj { OBJ_ID: 36, X: 1376*G+OX, Y: GY+G })    // Orbe bas
+$.add(obj { OBJ_ID: 8,  X: 1378*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8,  X: 1378*G+OX, Y: GY+3*G })
+
+// Colonnes doubles (joueur slalom entre blocs)
+for k in 0..6 {
+    let bx = 1382 + k*6
+    $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+G })
+    $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+2*G })
+    $.add(obj { OBJ_ID: 1, X: (bx+3)*G+OX, Y: GY+2*G })
+    $.add(obj { OBJ_ID: 1, X: (bx+3)*G+OX, Y: GY+3*G })
+    $.add(obj { OBJ_ID: 8, X: (bx+2)*G+OX, Y: GY+3*G })
+    $.add(obj { OBJ_ID: 8, X: (bx+5)*G+OX, Y: GY+G })
+}
+// Fin à 1382 + 6*6 = 1418
+
+// Faux plafond UFO (groupe 30, alpha trick)
+$.add(obj {
+    OBJ_ID: 1007,
+    X: 1420*G+OX, Y: GY+2*G,
+    TARGET: 30g,
+    ALPHA: 0,
+    DURATION: 0
+})
+for i in 1422..1432 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G, GROUPS: 30g })
+}
+$.add(obj { OBJ_ID: 36, X: 1427*G+OX, Y: GY+3*G })  // Orbe dans le "vide"
+$.add(obj { OBJ_ID: 8,  X: 1429*G+OX, Y: GY+G })
+$.add(obj {
+    OBJ_ID: 1007,
+    X: 1433*G+OX, Y: GY+2*G,
+    TARGET: 30g,
+    ALPHA: 1,
+    DURATION: 0
+})
+
+// Finish UFO : enchaînement spikes serrés
+$.add(obj { OBJ_ID: 8, X: 1436*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1436*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 1440*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 1444*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 1448*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1448*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 1452*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 1456*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 1460*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 1464*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 1468*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1468*G+OX, Y: GY+3*G })
+// 6 double-spikes en 16 blocs = 4 beats
+
+
+// ─── PORTAIL BALL x2 (bloc 1500) ─────────────────────────────
+$.add(obj { OBJ_ID: 660, X: 1500*G+OX, Y: GY+2*G })  // Ball portal — vérifier OBJ_ID
+
+
+// ============================================================
+// PHASE J1 : Ball x2 — Intro (blocs 1500-1575)
+// Ball : gravité inversée à chaque contact sol/plafond
+// H_saut ≈ 1.68 bl (v0=630 u/s à x2)
+// Timing : pression = forcer inversion immédiate (pas auto)
+// Couloir 4bl, rythme sur les contacts
+// ============================================================
+
+for i in 1500..1575 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G })
+}
+
+// Ball pattern : sol → plafond → sol en rythme (1 beat = 4 blocs)
+// Les spikes forcent l'inversion au bon moment
+$.add(obj { OBJ_ID: 8, X: 1504*G+OX, Y: GY+G   })  // Spike sol beat 1
+$.add(obj { OBJ_ID: 8, X: 1508*G+OX, Y: GY+4*G })  // Spike plafond beat 2
+$.add(obj { OBJ_ID: 8, X: 1512*G+OX, Y: GY+G   })  // Spike sol beat 3
+$.add(obj { OBJ_ID: 8, X: 1516*G+OX, Y: GY+4*G })  // Spike plafond beat 4
+
+// Orbe jaune (saut forcé en plein air) beat 5
+$.add(obj { OBJ_ID: 36, X: 1519*G+OX, Y: GY+2*G })
+
+// Double contact obligatoire (blocs 1520-1540)
+$.add(obj { OBJ_ID: 8, X: 1522*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1522*G+OX, Y: GY+4*G })
+$.add(obj { OBJ_ID: 8, X: 1526*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1530*G+OX, Y: GY+4*G })
+$.add(obj { OBJ_ID: 8, X: 1534*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1534*G+OX, Y: GY+4*G })
+
+
+// ============================================================
+// PHASE J2 : Ball x2 — Boss section (blocs 1575-1650)
+// Couloir Y=3, obstacles en sol et plafond serrés
+// Série d'orbes + spikes en rythme 0.5 beat
+// ============================================================
+
+for i in 1575..1650 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+4*G })
+}
+
+// Rythme 0.5 beat = 2 blocs
+$.add(obj { OBJ_ID: 8, X: 1578*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1580*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 1582*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1584*G+OX, Y: GY+3*G })
+
+// Séquence orbe-spike (hall of fame ball pattern)
+for m in 0..8 {
+    let bx = 1586 + m*8
+    $.add(obj { OBJ_ID: 36, X: bx*G+OX, Y: GY+G })       // Orbe bas
+    $.add(obj { OBJ_ID: 8,  X: (bx+2)*G+OX, Y: GY+3*G }) // Spike haut
+    $.add(obj { OBJ_ID: 36, X: (bx+4)*G+OX, Y: GY+3*G }) // Orbe haut
+    $.add(obj { OBJ_ID: 8,  X: (bx+6)*G+OX, Y: GY+G })   // Spike bas
+}
+// Fin à 1586 + 8*8 = 1650
+
+// ─── PORTAIL CUBE + Speed x2 (début Section 7) ───────────────
+$.add(obj { OBJ_ID: 12,  X: 1648*G+OX, Y: GY+2*G })  // Cube portal
+$.add(obj { OBJ_ID: 202, X: 1648*G+OX, Y: GY+2*G })  // Speed x2
+
+// ============================================================
+// FIN SECTION 6 — Section 7 : STORM (Wave x4 boss) à X=1648
+// ============================================================

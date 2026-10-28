@@ -1,0 +1,186 @@
+// ============================================================
+// VRAITH — Section 7 : STORM  (Wave x4 — boss ultime)
+// ============================================================
+// BPM     : 200  |  Beat = 0.300s = 72 frames
+// Mode    : Cube x2 (1648-1720) → Wave x4 (1720-1970)
+// vX x4   : 19.200 b/s  |  1 beat = 5.760 bl ≈ 6 blocs
+// Wave x4 : vy=±vx=19.2 b/s — section la plus rapide du level
+//           0.5 beat = 2.88 bl ≈ 3 blocs (demi-amplitude)
+// Couloir  : 1.5 bl minimum Extreme Demon
+// Début   : X=1648 (suite Section 6)
+// ============================================================
+
+let BEAT = 0.3
+let OX   = 195
+let GY   = 105
+let G    = 30
+
+let S    = 1648
+
+
+// ============================================================
+// COULEUR — rouge sang + flash blanc (STORM)
+// ============================================================
+$.add(obj {
+    OBJ_ID: 899,
+    X: S*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1000g,
+    R: 20, G_VAL: 0, B: 0,
+    DURATION: 0.2
+})
+$.add(obj {
+    OBJ_ID: 899,
+    X: S*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1g,
+    R: 255, G_VAL: 30, B: 30,
+    DURATION: 0.2
+})
+
+// Pulse rapide agressif (0.15 beat)
+for i in 0..120 {
+    wait(0.15 * i)
+    1000c.pulse(r=40, g=0, b=0, fade_out=0.1, exclusive=false)
+}
+
+
+// ============================================================
+// SOL CONTINU Section 7
+// ============================================================
+for i in 1648..1971 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY })
+}
+
+
+// ============================================================
+// PHASE K1 : Cube x2 — Transition (blocs 1648-1720)
+// Prépare le joueur pour Wave x4 : tempo + couloir
+// ============================================================
+
+// Plafond cube K1
+for i in 1648..1720 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G })
+}
+
+// 4 spikes signature (signature bloc avant drop x4)
+$.add(obj { OBJ_ID: 8, X: 1652*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 1656*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 1660*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 1664*G+OX, Y: GY+G })
+
+// Portail Speed x4 (annonce le changement)
+$.add(obj { OBJ_ID: 1334, X: 1668*G+OX, Y: GY+G })  // Speed x4 portal
+
+// Double spike + orbe (build-up)
+$.add(obj { OBJ_ID: 8,  X: 1672*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8,  X: 1672*G+OX, Y: GY+4*G })
+$.add(obj { OBJ_ID: 36, X: 1676*G+OX, Y: GY+G })    // Orbe jaune
+$.add(obj { OBJ_ID: 8,  X: 1680*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8,  X: 1680*G+OX, Y: GY+4*G })
+$.add(obj { OBJ_ID: 36, X: 1684*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8,  X: 1688*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8,  X: 1692*G+OX, Y: GY+4*G })
+$.add(obj { OBJ_ID: 8,  X: 1696*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8,  X: 1696*G+OX, Y: GY+4*G })
+
+// Portail Wave (drop brutal)
+$.add(obj { OBJ_ID: 660, X: 1720*G+OX, Y: GY+3*G })  // Wave portal
+
+
+// ============================================================
+// PHASE K2 : Wave x4 — Corridor serré (blocs 1720-1810)
+// 1 beat = 5.76 bl, corridors 2 blocs, zigzag agressif
+// ============================================================
+
+// Plafond Y=3 — couloir 2 blocs strict
+for i in 1720..1810 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G })
+}
+
+// Zigzag x4 : demi-beat = 2.88 bl ≈ 3 blocs
+// Alternance haut/bas toutes les 3 blocs
+$.add(obj { OBJ_ID: 8, X: 1723*G+OX, Y: GY+G })     // Spike sol
+$.add(obj { OBJ_ID: 8, X: 1726*G+OX, Y: GY+2*G })   // Spike haut
+$.add(obj { OBJ_ID: 8, X: 1729*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 1732*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 8, X: 1735*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 1738*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 8, X: 1741*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 1744*G+OX, Y: GY+2*G })
+
+// OUVERTURE SOUDAINE + double trap (Bloodbath style)
+for i in 1748..1760 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+6*G })
+}
+$.add(obj { OBJ_ID: 8, X: 1749*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1749*G+OX, Y: GY+5*G })
+$.add(obj { OBJ_ID: 8, X: 1754*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1754*G+OX, Y: GY+5*G })
+
+// Retour couloir ultra-serré Y=2
+for i in 1760..1810 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+2*G })
+}
+for k in 0..10 {
+    $.add(obj { OBJ_ID: 8, X: (1762+k*5)*G+OX, Y: GY+G })  // 1 spike/beat
+}
+
+
+// ============================================================
+// PHASE K3 : Wave x4 — Mini wave boss (blocs 1810-1900)
+// Portail mini : hitbox réduite, couloir 1.5 bl "jouable"
+// ============================================================
+
+// Portail mini
+$.add(obj { OBJ_ID: 99, X: 1810*G+OX, Y: GY+G })  // Mini on
+
+for i in 1810..1900 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+2*G })
+}
+
+// Mini wave : spikes 1 par beat (6 blocs à x4) — TRÈS dense
+for k in 0..15 {
+    $.add(obj { OBJ_ID: 8, X: (1813+k*6)*G+OX, Y: GY+G })
+}
+// Avec zigzag plafond intercalé (tous les 3 blocs)
+for k in 0..15 {
+    if k % 3 == 1 {
+        $.add(obj { OBJ_ID: 8, X: (1815+k*6)*G+OX, Y: GY+G })
+    }
+}
+
+$.add(obj { OBJ_ID: 101, X: 1900*G+OX, Y: GY+G })  // Normal size
+
+
+// ============================================================
+// PHASE K4 : Wave x4 — Finale / Climax (blocs 1900-1970)
+// Séquence finale avant Section 8 (multi-mode finale)
+// Murs + spikes croisés à rythme extrême
+// ============================================================
+
+for i in 1900..1970 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+4*G })
+}
+
+// Murs verticaux slalom (comme Section 3 mais à x4)
+for j in 0..8 {
+    let bx = 1903 + j*8
+    $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+2*G })
+    $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+3*G })
+    $.add(obj { OBJ_ID: 1, X: (bx+3)*G+OX, Y: GY+G })
+    $.add(obj { OBJ_ID: 1, X: (bx+3)*G+OX, Y: GY+2*G })
+    $.add(obj { OBJ_ID: 8, X: (bx+5)*G+OX, Y: GY+3*G })
+}
+// Fin slalom : 1903 + 8*8 = 1967
+
+// Spike triple final (last pattern avant cube)
+$.add(obj { OBJ_ID: 8, X: 1963*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1963*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 1966*G+OX, Y: GY+G   })
+
+// ─── PORTAIL CUBE + Speed x1 (Section 8 : outro) ─────────────
+$.add(obj { OBJ_ID: 12,  X: 1970*G+OX, Y: GY+2*G })  // Cube portal
+$.add(obj { OBJ_ID: 200, X: 1970*G+OX, Y: GY+2*G })  // Speed x1 (ralentissement)
+
+// ============================================================
+// FIN SECTION 7 — Section 8 : REQUIEM (multi-mode finale) à X=1970
+// ============================================================

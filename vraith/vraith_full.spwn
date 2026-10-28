@@ -1,0 +1,1986 @@
+// ============================================================
+// VRAITH — Niveau complet (assemblé automatiquement)
+// BPM: 200 | Newgrounds ID: 1633728 | Extreme Demon
+// Généré le : 2026-10-28 16:51
+// ============================================================
+
+
+// ── vraith_section1.spwn ──────────────────────────────────────────────
+// ============================================================
+// VRAITH — Section 1 : AWAKENING  (v2 — Extreme Demon)
+// ============================================================
+// BPM     : 200  |  Beat = 0.300s = 72 frames
+// Mode    : Cube x1 (blocs 0-105) → Cube x2 (105-210) → Ship x3 (210-270)
+// vX x1   : 10.386 b/s  |  1 beat = 3.116 bl  |  saut = 0.594s = 1.98 beats
+// vX x2   : 12.914 b/s  |  1 beat = 3.874 bl  |  saut ≈ 0.562s = 1.87 beats
+// H_max   : 5.196 bl (cube normal x1), 5.5 bl (x2)
+// X brut  : bloc*30+195  |  Y brut : rangée*30+105
+// ============================================================
+
+let BEAT = 0.3
+let OX   = 195
+let GY   = 105
+let G    = 30
+
+// ============================================================
+// COULEURS INITIALES
+// ============================================================
+1000c.set(r=8,   g=8,   b=8,   duration=0)  // BG  : noir quasi-pur
+1001c.set(r=26,  g=0,   b=0,   duration=0)  // Sol : bordeaux sombre
+1c.set(   r=200, g=162, b=0,   duration=0)  // Or  : blocs principaux
+2c.set(   r=139, g=0,   b=0,   duration=0)  // Rouge sang : outlines/spikes
+
+// ============================================================
+// PULSE — grosse caisse toutes les 2 beats (0.6s)
+// ============================================================
+for i in 0..80 {
+    wait(BEAT * 2 * i)
+    1000c.pulse(r=55, g=0, b=0, fade_out=0.25, exclusive=false)
+}
+
+// ============================================================
+// SOL DE BASE continu (Y=0), blocs 0-270
+// ============================================================
+for i in 0..271 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY })
+}
+
+
+// ============================================================
+// SECTION A — Cube x1  |  Blocs 0–105
+// Difficulté : introduction technique, pas de répit
+// 1 beat ≈ 3 blocs (3.116 exact)
+// ============================================================
+
+// ─── PHASE A1 : Calibration (blocs 0–30) ────────────────────
+// Plafond à Y=4 (corridor de 4 blocs), obstacles toutes les 3 blocs
+
+for i in 4..29 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+4*G })
+}
+
+// Beat 1.6 : spike sol bloc 5
+$.add(obj { OBJ_ID: 8, X: 5*G+OX, Y: GY+G })
+// Beat 2.9 : spike sol bloc 9
+$.add(obj { OBJ_ID: 8, X: 9*G+OX, Y: GY+G })
+// Beat 3.9 : orbe jaune haut bloc 12 Y=2 (recovery)
+$.add(obj { OBJ_ID: 84, X: 12*G+OX, Y: GY+2*G })
+// Beat 4.8 : spike PLAFOND bloc 15 Y=3 — ne pas sauter
+$.add(obj { OBJ_ID: 8, X: 15*G+OX, Y: GY+3*G })
+// Beat 5.8 : spike sol bloc 18 — sauter
+$.add(obj { OBJ_ID: 8, X: 18*G+OX, Y: GY+G })
+// Beat 6.7 : double spike (sol + plafond simultanés) bloc 21 — timing précis
+$.add(obj { OBJ_ID: 8, X: 21*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 21*G+OX, Y: GY+3*G })
+// Beat 7.7 : orbe vert no-hold bloc 24 Y=2
+$.add(obj { OBJ_ID: 85, X: 24*G+OX, Y: GY+2*G })
+// Beat 8.7 : spike sol bloc 27
+$.add(obj { OBJ_ID: 8, X: 27*G+OX, Y: GY+G })
+
+// ─── PHASE A2 : Escalier + passages serrés (blocs 30–60) ────
+// Sol monte et descend, corridor réduit à 3 blocs
+
+// Montée marche 1 (blocs 30-35)
+for col in 30..36 {
+    $.add(obj { OBJ_ID: 1, X: col*G+OX, Y: GY+G })
+    $.add(obj { OBJ_ID: 1, X: col*G+OX, Y: GY+2*G })
+}
+// Spike sommet marche 1 (bloc 33, Y=3) — saut impossible ici, passage bas obligatoire
+$.add(obj { OBJ_ID: 8, X: 33*G+OX, Y: GY+3*G })
+// Plafond bas blocs 30-36 Y=4 → corridor 1 bloc entre marche et plafond
+for i in 30..37 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+4*G })
+}
+
+// Orbe jaune haut (bloc 37, Y=4) : saute par-dessus la marche
+$.add(obj { OBJ_ID: 84, X: 37*G+OX, Y: GY+4*G })
+
+// Passage étroit blocs 37-44 : plafond Y=5
+for i in 37..45 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G })
+}
+// Spike dans corridor étroit (blocs 40, 43) — Y=2
+$.add(obj { OBJ_ID: 8, X: 40*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 8, X: 43*G+OX, Y: GY+2*G })
+
+// Retour sol plat blocs 45-47
+// Orbe rouge (bloc 48, Y=2) : bounce haut, inertie vers plafond
+$.add(obj { OBJ_ID: 1333, X: 48*G+OX, Y: GY+2*G })
+
+// Plafond serré Y=3 blocs 49-54 (corridor 3 blocs)
+for i in 49..55 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G })
+}
+// Spike sol + spike plafond dans le couloir serré
+$.add(obj { OBJ_ID: 8, X: 51*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 54*G+OX, Y: GY+2*G })
+
+// ─── PHASE A3 : Séquence critique (blocs 60–105) ────────────
+// Orbes enchaînés, faux sol, montée en tension avant x2
+
+// Triplet de spikes (blocs 60, 63, 66) — 1 beat chacun à x1
+$.add(obj { OBJ_ID: 8, X: 60*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 63*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 66*G+OX, Y: GY+G })
+
+// Recovery orbe jaune (bloc 69, Y=2)
+$.add(obj { OBJ_ID: 84, X: 69*G+OX, Y: GY+2*G })
+
+// Double spike + plafond serré (blocs 72-75)
+for i in 70..76 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G })
+}
+$.add(obj { OBJ_ID: 8, X: 72*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 72*G+OX, Y: GY+4*G })
+
+// Faux sol : alpha trigger déclenché à bloc 76
+//   → groupe 12 (blocs 78-83) disparaît → trou de 6 blocs
+$.add(obj {
+    OBJ_ID: 1007,
+    X: 76*G+OX, Y: GY+G,
+    TARGET: 12g, ALPHA: 0, DURATION: 0
+})
+for i in 78..84 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY, GROUPS: 12g })
+}
+// Orbe jaune dans le vide (bloc 81, Y=G) : seul moyen de passer
+$.add(obj { OBJ_ID: 84, X: 81*G+OX, Y: GY+G })
+
+// Sol réel reprend bloc 84-89
+// Montée finale vers x2 : enchaîné H-B
+$.add(obj { OBJ_ID: 84,   X: 90*G+OX,  Y: GY+4*G })
+$.add(obj { OBJ_ID: 84,   X: 93*G+OX,  Y: GY+G   })
+$.add(obj { OBJ_ID: 8,    X: 96*G+OX,  Y: GY+4*G })
+$.add(obj { OBJ_ID: 8,    X: 99*G+OX,  Y: GY+G   })
+$.add(obj { OBJ_ID: 1333, X: 102*G+OX, Y: GY+2*G })
+
+
+// ============================================================
+// SECTION B — Cube x2  |  Blocs 105–210
+// 1 beat = 3.874 bl ≈ 4 blocs  |  H_max ≈ 5.5 bl
+// ============================================================
+
+// Portail Speed x2
+$.add(obj { OBJ_ID: 202, X: 105*G+OX, Y: GY+G })
+
+// ─── PHASE B1 : Adaptation x2 (blocs 106–145) ───────────────
+// Plafond large (Y=6) au départ, se referme progressivement
+
+for i in 106..115 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+6*G })
+}
+$.add(obj { OBJ_ID: 8, X: 109*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 113*G+OX, Y: GY+G })
+
+// Orbe double haut-bas (0.5 beat d'écart à x2 ≈ 2 blocs)
+$.add(obj { OBJ_ID: 84, X: 117*G+OX, Y: GY+4*G })
+$.add(obj { OBJ_ID: 84, X: 119*G+OX, Y: GY+G   })
+
+// Plafond se referme à Y=4 (blocs 121-133)
+for i in 121..134 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+4*G })
+}
+// Pattern H-B-H (1 beat = 4 blocs à x2)
+$.add(obj { OBJ_ID: 8, X: 121*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 125*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 129*G+OX, Y: GY+3*G })
+
+// ─── PHASE B2 : Escalier ascendant (blocs 133–172) ──────────
+// Marches qui montent + spikes au sommet
+
+// Marche 1 (X=133) : sol monte Y=2, spike Y=3, plafond Y=5
+for row in 0..3 { $.add(obj { OBJ_ID: 1, X: 133*G+OX, Y: GY+row*G }) }
+$.add(obj { OBJ_ID: 8, X: 133*G+OX, Y: GY+3*G })
+for i in 133..137 { $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G }) }
+
+// Marche 2 (X=137) : sol monte Y=3, spike Y=4, plafond Y=6
+for row in 0..4 { $.add(obj { OBJ_ID: 1, X: 137*G+OX, Y: GY+row*G }) }
+$.add(obj { OBJ_ID: 8, X: 137*G+OX, Y: GY+4*G })
+for i in 137..141 { $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+6*G }) }
+
+// Marche 3 (X=141) : sol monte Y=4, spike Y=5, couloir 1 bloc
+for row in 0..5 { $.add(obj { OBJ_ID: 1, X: 141*G+OX, Y: GY+row*G }) }
+$.add(obj { OBJ_ID: 8, X: 141*G+OX, Y: GY+5*G })
+for i in 141..150 { $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+6*G }) }
+
+// Orbe vert no-hold (bloc 145, Y=3) dans passage de 1 bloc
+$.add(obj { OBJ_ID: 85, X: 145*G+OX, Y: GY+3*G })
+// Orbe vert hold (bloc 149, Y=5) pour sortir vers le haut
+$.add(obj { OBJ_ID: 85, X: 149*G+OX, Y: GY+5*G })
+
+// ─── PHASE B3 : Faux sol + vide (blocs 153–172) ─────────────
+$.add(obj {
+    OBJ_ID: 1007,
+    X: 149*G+OX, Y: GY+G,
+    TARGET: 13g, ALPHA: 0, DURATION: 0
+})
+for i in 153..163 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY, GROUPS: 13g })
+}
+$.add(obj { OBJ_ID: 84,   X: 157*G+OX, Y: GY+G   })  // Orbe vide #1
+$.add(obj { OBJ_ID: 84,   X: 161*G+OX, Y: GY+3*G })  // Orbe vide #2
+$.add(obj { OBJ_ID: 1333, X: 165*G+OX, Y: GY+2*G })  // Orbe rouge bounce
+$.add(obj { OBJ_ID: 8,    X: 169*G+OX, Y: GY+G   })  // Spike post-bounce
+
+// ─── PHASE B4 : Intensification finale (blocs 173–210) ──────
+// Plafond serré Y=3, 4 spikes en 4 beats
+
+for i in 173..191 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G })
+}
+$.add(obj { OBJ_ID: 8, X: 173*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 177*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 181*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 8, X: 185*G+OX, Y: GY+G   })
+
+// Enchaîné final (blocs 190-205)
+$.add(obj { OBJ_ID: 84,   X: 190*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 1333, X: 194*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 84,   X: 198*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8,    X: 202*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8,    X: 205*G+OX, Y: GY+2*G })
+
+
+// ============================================================
+// SECTION C — Pré-drop (blocs 210–270)
+// ============================================================
+
+// 3 spikes signature (1 beat = 4 blocs à x2)
+$.add(obj { OBJ_ID: 8, X: 210*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 214*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 218*G+OX, Y: GY+2*G })
+
+// Orbe rouge + orbe jaune
+$.add(obj { OBJ_ID: 1333, X: 222*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 84,   X: 226*G+OX, Y: GY+5*G })
+
+// Dernier couloir serré (Y=3, 8 blocs)
+for i in 230..238 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G })
+}
+$.add(obj { OBJ_ID: 8, X: 232*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 8, X: 236*G+OX, Y: GY+G   })
+
+// Dernier orbe
+$.add(obj { OBJ_ID: 84, X: 248*G+OX, Y: GY+G })
+
+// ─── PORTAIL SHIP + Speed x3 ───────────────────────────────
+$.add(obj { OBJ_ID: 13,  X: 258*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 203, X: 258*G+OX, Y: GY+G })
+
+// ============================================================
+// FIN SECTION 1 — Section 2 : DESCENT (Ship x3) à X=258
+// ============================================================
+
+// ── vraith_section2.spwn ──────────────────────────────────────────────
+// ============================================================
+// VRAITH — Section 2 : DESCENT  (Ship x3)
+// ============================================================
+// BPM     : 200  |  Beat = 0.300s = 72 frames
+// Mode    : Ship x3 (blocs 258-540)
+// vX x3   : 15.600 b/s  |  1 beat = 4.680 bl ≈ 5 blocs
+// Ship    : vMax↑ = 8 b/s (240 u/s)  |  vMax↓ = 6.4 b/s (192 u/s)
+//           g = 3024 u/s²  |  t→vMax = 0.079s ≈ 0.26 beats
+// Couloir : min 2.0 bl (Extreme) — 1 frame d'erreur = 0.065 bl
+// Début   : X=258 (suite Section 1)
+// ============================================================
+
+
+// START_BLOC : offset pour cette section
+let S    = 258
+
+// Helpers locaux
+// 1 beat x3 = 4.680 blocs ≈ 5
+// Sol + Plafond = murs du couloir ship
+// Spikes sur mur = réduisent la marge de 1 bloc
+
+
+// ============================================================
+// COULEUR — transition rouge profond (début drop)
+// ============================================================
+// Déclenchée à l'entrée du portail ship (beat 75 global)
+$.add(obj {
+    OBJ_ID: 899,  // Color trigger
+    X: S*G+OX, Y: GY+2*G,
+    TARGET_COLOR: 1000g,
+    R: 15, G_VAL: 0, B: 20,
+    DURATION: 0.5
+})
+$.add(obj {
+    OBJ_ID: 899,
+    X: S*G+OX, Y: GY+2*G,
+    TARGET_COLOR: 1g,
+    R: 180, G_VAL: 40, B: 200,
+    DURATION: 0.5
+})
+
+
+// ============================================================
+// PHASE D1 : Intro ship (blocs 258–295, beats 0–8 @x3)
+// Couloir large (6 blocs), descend progressivement
+// ============================================================
+
+// Mur SOL (Y=0 déjà posé par section 1 — continuer)
+for i in 258..541 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY })
+}
+
+// Mur PLAFOND — commence à Y=7, descend progressivement
+for i in 258..278 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+7*G })
+}
+// Descente plafond 278-298 : Y=7 → Y=5 (1 bloc tous les 10 blocs)
+for i in 278..288 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+6*G })
+}
+for i in 288..298 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G })
+}
+
+// Premiers spikes intro (blocs 263, 268) : sol
+$.add(obj { OBJ_ID: 8, X: 263*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 268*G+OX, Y: GY+G })
+
+// Spikes plafond (blocs 273, 278) : plafond Y=7 → spike Y=6
+$.add(obj { OBJ_ID: 8, X: 273*G+OX, Y: GY+6*G })
+$.add(obj { OBJ_ID: 8, X: 278*G+OX, Y: GY+5*G })
+
+// Double spike sol+plafond (bloc 283) : espace 4 blocs entre eux
+$.add(obj { OBJ_ID: 8, X: 283*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 283*G+OX, Y: GY+4*G })
+
+
+// ============================================================
+// PHASE D2 : Compression (blocs 298–370, beats 8–27 @x3)
+// Couloir fixé à 3.5 blocs, portail gravité flip
+// ============================================================
+
+// Plafond stabilisé Y=4 (couloir sol à Y=0, plafond à Y=4 = 4 blocs net)
+for i in 298..370 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+4*G })
+}
+
+// Spikes alternants (sol/plafond, 1 beat = 5 blocs)
+// Beat 8-14 : pattern alternant
+$.add(obj { OBJ_ID: 8, X: 300*G+OX, Y: GY+G   })  // Sol
+$.add(obj { OBJ_ID: 8, X: 305*G+OX, Y: GY+3*G })  // Plafond
+$.add(obj { OBJ_ID: 8, X: 310*G+OX, Y: GY+G   })  // Sol
+$.add(obj { OBJ_ID: 8, X: 315*G+OX, Y: GY+3*G })  // Plafond
+$.add(obj { OBJ_ID: 8, X: 320*G+OX, Y: GY+G   })  // Sol
+$.add(obj { OBJ_ID: 8, X: 325*G+OX, Y: GY+3*G })  // Plafond
+
+// Portail gravité INVERSE (bloc 328) — gravity flip
+$.add(obj { OBJ_ID: 11, X: 328*G+OX, Y: GY+2*G })
+
+// Après flip : joueur colle au plafond
+// Spikes maintenant "sol" du côté plafond
+$.add(obj { OBJ_ID: 8, X: 333*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 338*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 343*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 348*G+OX, Y: GY+G   })
+
+// Portail gravité NORMALE (bloc 353) — retour normal
+$.add(obj { OBJ_ID: 10, X: 353*G+OX, Y: GY+2*G })
+
+// Spike double après retour (bloc 358) : adaptation
+$.add(obj { OBJ_ID: 8, X: 358*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 363*G+OX, Y: GY+3*G })
+
+
+// ============================================================
+// PHASE D3 : Precision ship (blocs 370–450, beats 27–46 @x3)
+// Couloir réduit à 2.5 blocs — Extreme Demon territory
+// ============================================================
+
+// Couloir 2.5 blocs : plafond à Y=3 (avec spikes qui grignotent la marge)
+for i in 370..450 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G })
+}
+
+// Pattern mur-spike : spike de sol + spike de plafond consécutifs (1 bloc libres entre eux)
+// Chaque pair est à 1 beat (5 blocs à x3)
+$.add(obj { OBJ_ID: 8, X: 372*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 375*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 8, X: 378*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 383*G+OX, Y: GY+2*G })
+
+// Portail MINI (à vérifier OBJ_ID : 99 selon version GD)
+// Réduit le hitbox joueur, couloir de 1.5 bloc devient jouable
+// TODO: vérifier OBJ_ID mini portal dans BetterEdit
+$.add(obj { OBJ_ID: 99,  X: 388*G+OX, Y: GY+2*G })  // Mini on
+
+// Passage mini (blocs 388-415) : couloir réduit à Y=2
+for i in 388..415 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+2*G })
+}
+
+// Spikes dans passage mini (1 frame de marge à x3)
+$.add(obj { OBJ_ID: 8, X: 391*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 396*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 401*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 406*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 411*G+OX, Y: GY+G   })
+
+// Portail NORMAL (retour taille normale)
+$.add(obj { OBJ_ID: 101, X: 415*G+OX, Y: GY+2*G })  // Normal size — vérifier OBJ_ID
+
+// Réouverture progressive blocs 415-440
+for i in 415..430 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G })
+}
+for i in 430..450 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+4*G })
+}
+
+$.add(obj { OBJ_ID: 8, X: 420*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 425*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 8, X: 430*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 435*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 440*G+OX, Y: GY+3*G })
+
+
+// ============================================================
+// PHASE D4 : Boss ship (blocs 450–540, beats 46–57 @x3)
+// Couloir 2 blocs strict + double flip gravité
+// ============================================================
+
+// Couloir étroit Y=2 (2 blocs nets)
+for i in 450..510 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+2*G })
+}
+
+// Premier flip à blocs 455
+$.add(obj { OBJ_ID: 11, X: 455*G+OX, Y: GY+G })
+// Spikes flippés (5 beats, 5 blocs chacun)
+$.add(obj { OBJ_ID: 8, X: 458*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 463*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 468*G+OX, Y: GY+G   })
+
+// 2ème flip retour normal (bloc 473)
+$.add(obj { OBJ_ID: 10, X: 473*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 476*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 481*G+OX, Y: GY+G   })
+
+// 3ème flip inverse (bloc 486) — enchaînement rapide
+$.add(obj { OBJ_ID: 11, X: 486*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 489*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 494*G+OX, Y: GY+G   })
+
+// Retour normal (bloc 499)
+$.add(obj { OBJ_ID: 10, X: 499*G+OX, Y: GY+G })
+
+// Ouverture progressive vers le portail Wave (blocs 510-540)
+for i in 510..530 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G })
+}
+for i in 530..541 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+7*G })
+}
+$.add(obj { OBJ_ID: 8, X: 515*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 520*G+OX, Y: GY+4*G })
+$.add(obj { OBJ_ID: 8, X: 525*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 530*G+OX, Y: GY+4*G })
+
+// ─── PORTAIL WAVE + Speed x2 (début Section 3) ─────────────
+$.add(obj { OBJ_ID: 660, X: 537*G+OX, Y: GY+3*G })  // Wave portal
+$.add(obj { OBJ_ID: 202, X: 537*G+OX, Y: GY+3*G })  // Speed x2
+
+// ============================================================
+// FIN SECTION 2 — Section 3 : CORRUPTION (Wave x2) à X=537
+// ============================================================
+
+// ── vraith_section3.spwn ──────────────────────────────────────────────
+// ============================================================
+// VRAITH — Section 3 : CORRUPTION  (Wave x2/x3)
+// ============================================================
+// BPM     : 200  |  Beat = 0.300s = 72 frames
+// Mode    : Wave x2 (blocs 537-690) → Wave x3 (690-810)
+// vX x2   : 12.914 b/s  |  1 beat = 3.874 bl ≈ 4 blocs
+// vX x3   : 15.600 b/s  |  1 beat = 4.680 bl ≈ 5 blocs
+// Wave    : diagonal 45°  |  vy = ±vx  |  pas de saut
+//           Couloir min : 1.5 bl (Extreme) / 2.0 bl (Hard)
+// Début   : X=537 (suite Section 2)
+// ============================================================
+//
+// DESIGN WAVE :
+//   Trou = vide libre entre sol et plafond (en blocs)
+//   Pour passer en ligne droite : trou ≥ 1.5 bl (normal)
+//   Zigzag (haut-bas) : joueur effectue 180° en ~0.5 beat
+//   Virage serré : +/- 2 blocs de déviation en 1 beat
+// ============================================================
+
+
+let S    = 537  // Bloc de départ section 3
+
+
+// ============================================================
+// COULEUR — violet électrique (Wave drop)
+// ============================================================
+$.add(obj {
+    OBJ_ID: 899,
+    X: S*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1000g,
+    R: 5, G_VAL: 0, B: 25,
+    DURATION: 0.3
+})
+$.add(obj {
+    OBJ_ID: 899,
+    X: S*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1g,
+    R: 80, G_VAL: 0, B: 255,
+    DURATION: 0.3
+})
+
+// Pulse couleur plus rapide en Wave (1 beat = 0.3s)
+for i in 0..100 {
+    wait(BEAT * i)
+    1000c.pulse(r=0, g=0, b=40, fade_out=0.15, exclusive=false)
+}
+
+
+// ============================================================
+// PHASE E1 : Intro Wave x2 (blocs 537–595, beats 0–15 @x2)
+// Couloir 3-4 blocs, zigzag modéré pour calibration
+// ============================================================
+
+// Couloir départ large (4 blocs nets)
+// Sol = S+i*G + GY  (déjà posé)
+// Plafond variable selon pattern
+
+// PATTERN ZIGZAG : corridors alternant haut-bas
+// Chaque segment dure 1 beat (4 blocs à x2)
+
+// Segment 1 (537-541) : couloir centré Y=2-5 (plafond Y=5)
+for i in 537..542 { $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G }) }
+
+// Segment 2 (541-545) : couloir bas Y=1-4 (plafond Y=4)
+for i in 541..546 { $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+4*G }) }
+
+// Segment 3 (545-549) : couloir haut Y=2-5 de nouveau
+for i in 545..550 { $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G }) }
+
+// Segment 4 (549-553) : descente brusque Y=3
+for i in 549..554 { $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G }) }
+
+// Segment 5-10 : alternance avec spikes sur les murs
+for i in 553..557 { $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G }) }
+$.add(obj { OBJ_ID: 8, X: 555*G+OX, Y: GY+G   })  // Spike sol
+for i in 557..561 { $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G }) }
+$.add(obj { OBJ_ID: 8, X: 559*G+OX, Y: GY+2*G })  // Spike plafond
+
+for i in 561..565 { $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G }) }
+$.add(obj { OBJ_ID: 8, X: 562*G+OX, Y: GY+G   })
+for i in 565..569 { $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G }) }
+$.add(obj { OBJ_ID: 8, X: 567*G+OX, Y: GY+2*G })
+
+for i in 569..573 { $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G }) }
+$.add(obj { OBJ_ID: 8, X: 570*G+OX, Y: GY+G   })
+for i in 573..577 { $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G }) }
+$.add(obj { OBJ_ID: 8, X: 575*G+OX, Y: GY+2*G })
+
+
+// ============================================================
+// PHASE E2 : Corridors étroits x2 (blocs 577–640, beats 10–27)
+// Couloir 2 blocs — Extreme Demon standard
+// ============================================================
+
+// Couloir à 2 blocs, position variable (zigzag serré)
+// Zigzag haut : plafond Y=3, sol Y=0 → passage Y=1-2
+// Zigzag bas  : plafond Y=2, sol Y=0 → passage Y=1
+
+// Zigzag HAUT (4 blocs)
+for i in 577..581 { $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G }) }
+// Spike dans le passage (1 bloc libre)
+$.add(obj { OBJ_ID: 8, X: 578*G+OX, Y: GY+G })
+
+// Zigzag BAS (4 blocs)
+for i in 581..585 { $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+2*G }) }
+$.add(obj { OBJ_ID: 8, X: 583*G+OX, Y: GY+G })
+
+// Répéter 6 fois le pattern haut/bas
+for cycle in 0..6 {
+    let base = 585 + cycle * 8
+    // HAUT : plafond Y=4, spike Y=G
+    for i in base..(base+4) {
+        $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+4*G })
+    }
+    $.add(obj { OBJ_ID: 8, X: (base+1)*G+OX, Y: GY+G })
+    // BAS : plafond Y=2, spike Y=G
+    for i in (base+4)..(base+8) {
+        $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+2*G })
+    }
+    $.add(obj { OBJ_ID: 8, X: (base+5)*G+OX, Y: GY+G })
+}
+// Phase E2 se termine à 585 + 6*8 = 633
+
+// Transition : 3 blocs de répit (couloir large)
+for i in 633..637 { $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G }) }
+
+
+// ============================================================
+// PHASE E3 : Slalom diagonal (blocs 637–690, beats 27–39 @x2)
+// Obstacles en diagonale, rythme 0.5 beat
+// ============================================================
+
+// Pattern slalom : "mur" en diagonale descendante
+// Chaque mur est 2 blocs de hauteur décalés de 1 vers le bas
+
+// Mur 1 à bloc 637 (Y=2 à Y=3)
+$.add(obj { OBJ_ID: 1, X: 637*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 1, X: 637*G+OX, Y: GY+3*G })
+// Mur 2 à bloc 639 (Y=3 à Y=4) — décalé vers le haut
+$.add(obj { OBJ_ID: 1, X: 639*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 1, X: 639*G+OX, Y: GY+4*G })
+// Mur 3 à bloc 641 (Y=2 à Y=3) — décalé vers le bas
+$.add(obj { OBJ_ID: 1, X: 641*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 1, X: 641*G+OX, Y: GY+3*G })
+// Plafond bas continu (Y=5)
+for i in 637..660 { $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G }) }
+
+// Répétition du slalom sur 53 blocs
+for j in 0..6 {
+    let bx = 643 + j * 8
+    $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+2*G })
+    $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+3*G })
+    $.add(obj { OBJ_ID: 1, X: (bx+2)*G+OX, Y: GY+3*G })
+    $.add(obj { OBJ_ID: 1, X: (bx+2)*G+OX, Y: GY+4*G })
+    $.add(obj { OBJ_ID: 1, X: (bx+4)*G+OX, Y: GY+2*G })
+    $.add(obj { OBJ_ID: 1, X: (bx+4)*G+OX, Y: GY+3*G })
+}
+// termine à 643 + 6*8 = 691
+
+// ─── PORTAIL SPEED x3 (bloc 690) ───────────────────────────
+$.add(obj { OBJ_ID: 203, X: 690*G+OX, Y: GY+3*G })
+
+
+// ============================================================
+// PHASE E4 : Wave x3 — boss section (blocs 690–810, beats 0–25 @x3)
+// Couloir 1.5-2 blocs — zone de mort à 15.6 b/s
+// 1 beat = 4.680 blocs ≈ 5 blocs
+// ============================================================
+
+// Plafond serré Y=2 pour tout le segment boss
+for i in 690..730 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+2*G })
+}
+
+// Pattern zigzag serré à x3 : chaque demi-beat = 2.34 blocs ≈ 2 blocs
+// Joueur doit alterner haut/bas toutes les 2 blocs
+
+// Série de spikes (1 tous les 5 blocs = 1 beat)
+$.add(obj { OBJ_ID: 8, X: 693*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 698*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 703*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 708*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 713*G+OX, Y: GY+G })
+
+// Ouverture soudaine + double spike (trompe l'oeil)
+for i in 730..740 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G })
+}
+$.add(obj { OBJ_ID: 8, X: 731*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 731*G+OX, Y: GY+4*G })
+$.add(obj { OBJ_ID: 8, X: 735*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 735*G+OX, Y: GY+4*G })
+
+// Retour couloir ultra-serré (Y=1.5 — mini obligatoire)
+// Portail mini wave (bloc 740)
+$.add(obj { OBJ_ID: 99,  X: 740*G+OX, Y: GY+G })  // Mini on
+
+for i in 740..780 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+2*G })
+}
+
+// Dans le couloir mini wave : spikes toutes les 4 blocs (0.8 beat)
+for k in 0..10 {
+    $.add(obj { OBJ_ID: 8, X: (742 + k*4)*G+OX, Y: GY+G })
+}
+
+// Retour taille normale (bloc 780)
+$.add(obj { OBJ_ID: 101, X: 780*G+OX, Y: GY+G })
+
+// Sequence finale wave avant cube (blocs 780-810)
+for i in 780..810 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+4*G })
+}
+$.add(obj { OBJ_ID: 8, X: 783*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 788*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 793*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 798*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 803*G+OX, Y: GY+G   })
+
+// ─── PORTAIL CUBE + Speed x2 (début Section 4) ─────────────
+$.add(obj { OBJ_ID: 12,  X: 808*G+OX, Y: GY+2*G })  // Cube portal
+$.add(obj { OBJ_ID: 202, X: 808*G+OX, Y: GY+2*G })  // Speed x2
+
+// ============================================================
+// FIN SECTION 3 — Section 4 : APEX (Cube x2 + Robot) à X=808
+// ============================================================
+
+// ── vraith_section4.spwn ──────────────────────────────────────────────
+// ============================================================
+// VRAITH — Section 4 : APEX  (Cube x2 + Robot x2)
+// ============================================================
+// BPM     : 200  |  Beat = 0.300s = 72 frames
+// Mode    : Cube x2 (blocs 808-930) → Robot x2 (930-1050)
+// vX x2   : 12.914 b/s  |  1 beat = 3.874 bl ≈ 4 blocs
+// Cube    : v0=1050 u/s, g=3533 u/s², H=5.196 bl, t=0.594s
+//           x2 : H×0.855=4.44bl, t×0.855=0.508s (vX scale)
+// Robot   : v0=[525..1050] u/s selon hold duration
+//           Robot x2 : mini sauts 1.5-2bl, grands sauts 3-4bl
+// Début   : X=808 (suite Section 3)
+// ============================================================
+
+
+let S    = 808  // Bloc de départ section 4
+
+
+// ============================================================
+// COULEUR — blanc électrique (APEX climax)
+// ============================================================
+$.add(obj {
+    OBJ_ID: 899,
+    X: S*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1000g,
+    R: 15, G_VAL: 15, B: 30,
+    DURATION: 0.4
+})
+$.add(obj {
+    OBJ_ID: 899,
+    X: S*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1g,
+    R: 255, G_VAL: 255, B: 255,
+    DURATION: 0.4
+})
+
+// Pulse blanc → retour couleur
+for i in 0..80 {
+    wait(BEAT * i)
+    1000c.pulse(r=10, g=10, b=20, fade_out=0.2, exclusive=false)
+}
+
+
+// ============================================================
+// PHASE F1 : Cube x2 — Reprise (blocs 808-860, beats 0-13)
+// Transition wave → cube : couloir modéré, calibration saut x2
+// ============================================================
+// Sol continu S4
+for i in 808..1051 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY })
+}
+
+// Plafond départ large (Y=6) → réduction progressive
+for i in 808..828 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+6*G })
+}
+for i in 828..848 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G })
+}
+
+// F1 : Spikes d'introduction au rythme — 1/beat (4 blocs à x2)
+// Cube x2 : 1 beat = 3.874 bl ≈ 4 blocs
+$.add(obj { OBJ_ID: 8, X: 812*G+OX, Y: GY+G })  // Beat 1
+$.add(obj { OBJ_ID: 8, X: 816*G+OX, Y: GY+G })  // Beat 2
+$.add(obj { OBJ_ID: 8, X: 820*G+OX, Y: GY+G })  // Beat 3
+$.add(obj { OBJ_ID: 8, X: 824*G+OX, Y: GY+G })  // Beat 4
+// Double spike beat 5
+$.add(obj { OBJ_ID: 8, X: 828*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 828*G+OX, Y: GY+4*G })
+// Pattern alternant haut/bas beat 6-10
+$.add(obj { OBJ_ID: 8, X: 832*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 836*G+OX, Y: GY+4*G })
+$.add(obj { OBJ_ID: 8, X: 840*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 844*G+OX, Y: GY+4*G })
+$.add(obj { OBJ_ID: 8, X: 848*G+OX, Y: GY+G })
+
+// Orbe jaune (saut forcé par-dessus spike à Y=1) beat 10-11
+$.add(obj { OBJ_ID: 36, X: 849*G+OX, Y: GY+G })  // Orbe jaune
+
+
+// ============================================================
+// PHASE F2 : Cube x2 — Escalier inversé serré (blocs 852-900)
+// Plafond Y=4 fixe, obstacles en escalier descendant
+// ============================================================
+
+for i in 848..930 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+4*G })
+}
+
+// Escalier bas : plateformes montant (joueur saute par-dessus)
+$.add(obj { OBJ_ID: 1, X: 852*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 1, X: 852*G+OX, Y: GY+2*G })  // Bloc Y=2
+
+$.add(obj { OBJ_ID: 8, X: 854*G+OX, Y: GY+G })    // Spike devant le bloc
+
+$.add(obj { OBJ_ID: 1, X: 856*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 1, X: 856*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 1, X: 857*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 1, X: 857*G+OX, Y: GY+2*G })
+
+$.add(obj { OBJ_ID: 8, X: 859*G+OX, Y: GY+G })    // Spike
+
+// Triplet escalier montant (blocs 860-872)
+for j in 0..3 {
+    let bx = 860 + j*4
+    $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+G })
+    $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+2*G })
+    $.add(obj { OBJ_ID: 1, X: (bx+1)*G+OX, Y: GY+G })
+    $.add(obj { OBJ_ID: 1, X: (bx+1)*G+OX, Y: GY+2*G })
+    $.add(obj { OBJ_ID: 8, X: (bx+3)*G+OX, Y: GY+G })  // Spike avant chaque groupe
+}
+
+// Orbe rouge (saut court forcé) bloc 873
+$.add(obj { OBJ_ID: 84, X: 873*G+OX, Y: GY+G })  // Orbe rouge
+
+// Corridor final bloc 876-900 : spikes croisés
+$.add(obj { OBJ_ID: 8, X: 877*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 877*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 881*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 885*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 889*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 893*G+OX, Y: GY+3*G })
+
+// Orbe bleu (inversion de saut) bloc 896
+$.add(obj { OBJ_ID: 84, X: 896*G+OX, Y: GY+3*G })  // Orbe bleu = OBJ_ID 84 côté plafond
+// Note: Orbe bleu réel = OBJ_ID 84, mais vérifier la couleur
+
+
+// ============================================================
+// PHASE F3 : Faux sol + Orbe dans le vide (blocs 900-930)
+// Signature Bloodbath : trap avec alpha trigger sur sol
+// ============================================================
+
+// Déclencheur alpha : cache le sol réel à bloc 905 (groupe 20)
+$.add(obj {
+    OBJ_ID: 1007,  // Alpha trigger
+    X: 900*G+OX, Y: GY+G,
+    TARGET: 20g,
+    ALPHA: 0,
+    DURATION: 0
+})
+
+// Faux sol (groupe 20) : blocs 905-915 cachés
+for i in 905..915 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY, GROUPS: 20g })
+}
+
+// Orbe jaune dans le vide (nécessite saut alors que le sol semble absent)
+$.add(obj { OBJ_ID: 36, X: 910*G+OX, Y: GY+G })  // Orbe jaune flottant
+
+// Spike piège : visible sur le "sol" qui n'est plus là
+$.add(obj { OBJ_ID: 8, X: 912*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 916*G+OX, Y: GY+G })
+
+// Réapparition sol (alpha 1)
+$.add(obj {
+    OBJ_ID: 1007,
+    X: 918*G+OX, Y: GY+G,
+    TARGET: 20g,
+    ALPHA: 1,
+    DURATION: 0
+})
+
+// Spike de conclusion avant portail Robot
+$.add(obj { OBJ_ID: 8, X: 922*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 922*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 926*G+OX, Y: GY+G   })
+
+
+// ─── PORTAIL ROBOT (bloc 930) ────────────────────────────────
+$.add(obj { OBJ_ID: 660, X: 930*G+OX, Y: GY+2*G })  // Robot portal — vérifier OBJ_ID
+// Note: Robot portal OBJ_ID à confirmer (peut être différent de Wave 660)
+
+
+// ============================================================
+// PHASE G1 : Robot x2 — Calibration (blocs 930-980, beats 0-12)
+// Robot = sauts à durée variable, rythme musicalisé
+// v0 court = CUBE_V0*0.5 = 525 u/s → H≈1.3bl (29ms hold)
+// v0 long  = CUBE_V0     = 1050 u/s → H≈4.4bl (full hold)
+// ============================================================
+
+// Plafond Robot G1 : Y=6 puis descend
+for i in 930..960 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+6*G })
+}
+for i in 960..980 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G })
+}
+
+// G1 Rythme robot : saut court (tap) / long (hold)
+// Beat 1-2 : 2 blocs séparés (saut court par-dessus)
+$.add(obj { OBJ_ID: 1, X: 934*G+OX, Y: GY+G })  // Bloc plateforme
+$.add(obj { OBJ_ID: 8, X: 935*G+OX, Y: GY+2*G })  // Spike dessus
+$.add(obj { OBJ_ID: 1, X: 938*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 939*G+OX, Y: GY+2*G })
+
+// Beat 3-4 : bloc haut (saut long forcé)
+$.add(obj { OBJ_ID: 1, X: 942*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 1, X: 942*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 1, X: 942*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 944*G+OX, Y: GY+G })    // Spike sol après le bloc
+$.add(obj { OBJ_ID: 8, X: 945*G+OX, Y: GY+G })
+
+// Beat 5-8 : escalier 2 marches + spike
+$.add(obj { OBJ_ID: 1, X: 946*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 948*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 1, X: 950*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 1, X: 950*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 8, X: 952*G+OX, Y: GY+G })
+
+// Orbe jaune (saut précis via orbe) beat 8
+$.add(obj { OBJ_ID: 36, X: 953*G+OX, Y: GY+G })
+
+$.add(obj { OBJ_ID: 8, X: 956*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 956*G+OX, Y: GY+4*G })
+$.add(obj { OBJ_ID: 8, X: 960*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 964*G+OX, Y: GY+4*G })
+
+
+// ============================================================
+// PHASE G2 : Robot x2 — Séquence boss (blocs 980-1050)
+// Pattern complexe : saut court + long alternés, blocs obstacles
+// Plateforme flottante à Y=3, passage inférieur Y=0-2
+// ============================================================
+
+// Plafond serré Y=4
+for i in 980..1050 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+4*G })
+}
+
+// Plateforme flottante milieu (groupe 21 pour trigger possible)
+for j in 0..4 {
+    let bx = 982 + j*16
+    // Bloc flottant Y=2 (atterrissage après saut long)
+    $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+2*G })
+    $.add(obj { OBJ_ID: 1, X: (bx+1)*G+OX, Y: GY+2*G })
+    // Spike dessus (forcer atterrissage précis)
+    $.add(obj { OBJ_ID: 8, X: (bx+2)*G+OX, Y: GY+3*G })
+    // Spike sol après plateforme
+    $.add(obj { OBJ_ID: 8, X: (bx+3)*G+OX, Y: GY+G })
+    // Bloc bas (passage serré)
+    $.add(obj { OBJ_ID: 1, X: (bx+4)*G+OX, Y: GY+G })
+    $.add(obj { OBJ_ID: 1, X: (bx+4)*G+OX, Y: GY+2*G })
+    $.add(obj { OBJ_ID: 8, X: (bx+6)*G+OX, Y: GY+G })
+    // Spike haut plafond (passer courbé)
+    $.add(obj { OBJ_ID: 8, X: (bx+8)*G+OX, Y: GY+3*G })
+    $.add(obj { OBJ_ID: 8, X: (bx+12)*G+OX, Y: GY+G })
+}
+// G2 se termine à 982 + 4*16 = 1046
+
+// Triplet final avant transition (beats 17-19)
+$.add(obj { OBJ_ID: 8, X: 1042*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1042*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 1046*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1046*G+OX, Y: GY+3*G })
+
+// Orbe rouge (saut court avant portail)
+$.add(obj { OBJ_ID: 84, X: 1048*G+OX, Y: GY+G })
+
+// ─── PORTAIL SHIP + Speed x3 (début Section 5) ───────────────
+$.add(obj { OBJ_ID: 13,  X: 1050*G+OX, Y: GY+2*G })  // Ship portal
+$.add(obj { OBJ_ID: 203, X: 1050*G+OX, Y: GY+2*G })  // Speed x3
+
+// ============================================================
+// FIN SECTION 4 — Section 5 : ECLIPSE (Ship+Wave x3) à X=1050
+// ============================================================
+
+// ── vraith_section5.spwn ──────────────────────────────────────────────
+// ============================================================
+// VRAITH — Section 5 : ECLIPSE  (Ship x3 ↔ Wave x3 alternés)
+// ============================================================
+// BPM     : 200  |  Beat = 0.300s = 72 frames
+// Mode    : Ship x3 (1050-1140) → Wave x3 (1140-1230) → Ship x3 (1230-1320)
+// vX x3   : 15.600 b/s  |  1 beat = 4.680 bl ≈ 5 blocs
+// Ship g  : 3024 u/s²  |  vMax↑=8 b/s  |  vMax↓=6.4 b/s
+// Wave    : vy=±vx=15.600 b/s (45°) — extrême danger
+// Début   : X=1050 (suite Section 4)
+// ============================================================
+
+
+let S    = 1050
+
+
+// ============================================================
+// COULEUR — orange ardent (ECLIPSE)
+// ============================================================
+$.add(obj {
+    OBJ_ID: 899,
+    X: S*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1000g,
+    R: 25, G_VAL: 8, B: 0,
+    DURATION: 0.3
+})
+$.add(obj {
+    OBJ_ID: 899,
+    X: S*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1g,
+    R: 255, G_VAL: 140, B: 0,
+    DURATION: 0.3
+})
+
+for i in 0..90 {
+    wait(BEAT * i)
+    1000c.pulse(r=20, g=5, b=0, fade_out=0.15, exclusive=false)
+}
+
+
+// ============================================================
+// SOL CONTINU Section 5
+// ============================================================
+for i in 1050..1321 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY })
+}
+
+
+// ============================================================
+// PHASE H1 : Ship x3 — Compression initiale (blocs 1050-1140)
+// Couloir 3bl → 2bl, spikes rythme 1/beat (5 blocs)
+// ============================================================
+
+// Plafond départ Y=4, descend Y=3 à bloc 1090
+for i in 1050..1090 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+4*G })
+}
+for i in 1090..1140 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G })
+}
+
+// Spikes sol : 1 par beat (5 blocs)
+$.add(obj { OBJ_ID: 8, X: 1055*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 1060*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 1065*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 1070*G+OX, Y: GY+G })
+
+// Double spike sol+plafond (beats 5-6)
+$.add(obj { OBJ_ID: 8, X: 1075*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1075*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 1080*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1080*G+OX, Y: GY+2*G })
+
+// Gravity flip H1 (bloc 1085) : inverse + retour 10 blocs après
+$.add(obj { OBJ_ID: 11, X: 1085*G+OX, Y: GY+2*G })  // Inverse
+$.add(obj { OBJ_ID: 8,  X: 1088*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 8,  X: 1093*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 10, X: 1095*G+OX, Y: GY+2*G })  // Retour normal
+$.add(obj { OBJ_ID: 8,  X: 1098*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8,  X: 1103*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8,  X: 1108*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8,  X: 1113*G+OX, Y: GY+2*G })
+
+// Corridor ultra-serré final ship (blocs 1120-1140)
+$.add(obj { OBJ_ID: 8, X: 1118*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1118*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 8, X: 1123*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1128*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 8, X: 1133*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1138*G+OX, Y: GY+2*G })
+
+
+// ─── PORTAIL WAVE x3 (bloc 1140) ─────────────────────────────
+$.add(obj { OBJ_ID: 660, X: 1140*G+OX, Y: GY+2*G })  // Wave portal
+
+
+// ============================================================
+// PHASE H2 : Wave x3 — Segment intermédiaire (blocs 1140-1230)
+// Couloir 2bl strict, spikes 1/beat (5 blocs à x3)
+// ============================================================
+
+for i in 1140..1230 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G })
+}
+
+// Zigzag wave x3 : chaque demi-beat = 2.34 bl ≈ 2 blocs
+for k in 0..9 {
+    let bx = 1145 + k*10
+    // HAUT : plafond Y=4, passage bas
+    $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+4*G })
+    $.add(obj { OBJ_ID: 1, X: (bx+1)*G+OX, Y: GY+4*G })
+    $.add(obj { OBJ_ID: 8, X: bx*G+OX, Y: GY+G })     // Spike sol
+    // BAS : plafond Y=3 strict
+    $.add(obj { OBJ_ID: 8, X: (bx+5)*G+OX, Y: GY+G }) // Spike sol (passage bas)
+    $.add(obj { OBJ_ID: 8, X: (bx+5)*G+OX, Y: GY+2*G }) // Spike plafond bas
+}
+// termine à 1145 + 9*10 = 1235 — OK
+
+// Double spike trap (bloc 1220) avant retour ship
+$.add(obj { OBJ_ID: 8, X: 1220*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1220*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 8, X: 1225*G+OX, Y: GY+G   })
+
+
+// ─── PORTAIL SHIP x3 (bloc 1230) ─────────────────────────────
+$.add(obj { OBJ_ID: 13,  X: 1230*G+OX, Y: GY+2*G })  // Ship portal
+
+
+// ============================================================
+// PHASE H3 : Ship x3 — Boss final Section 5 (blocs 1230-1320)
+// Couloir 2bl + double gravity flip + mini ship
+// ============================================================
+
+for i in 1230..1290 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G })
+}
+for i in 1290..1320 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G })
+}
+
+// Spikes boss : rythme accéléré (0.5 beat = 2.5 blocs ≈ 3 blocs)
+$.add(obj { OBJ_ID: 8, X: 1233*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1233*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 8, X: 1236*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1239*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 8, X: 1242*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1245*G+OX, Y: GY+2*G })
+
+// Gravity flip double rapide (blocs 1250, 1260, 1270)
+$.add(obj { OBJ_ID: 11, X: 1250*G+OX, Y: GY+G })  // Inverse
+$.add(obj { OBJ_ID: 8,  X: 1253*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 8,  X: 1257*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 10, X: 1260*G+OX, Y: GY+G })  // Retour
+$.add(obj { OBJ_ID: 8,  X: 1263*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 11, X: 1270*G+OX, Y: GY+G })  // Re-inverse
+$.add(obj { OBJ_ID: 8,  X: 1273*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 10, X: 1280*G+OX, Y: GY+G })  // Retour final
+
+// Mini ship segment (blocs 1285-1310) : couloir 1.5bl
+$.add(obj { OBJ_ID: 99, X: 1285*G+OX, Y: GY+G })   // Mini on
+for i in 1285..1310 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+2*G })
+}
+for k in 0..5 {
+    $.add(obj { OBJ_ID: 8, X: (1287+k*5)*G+OX, Y: GY+G })
+}
+$.add(obj { OBJ_ID: 101, X: 1310*G+OX, Y: GY+G })  // Normal size
+
+// Ouverture + spike finale avant Section 6
+$.add(obj { OBJ_ID: 8, X: 1313*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1316*G+OX, Y: GY+4*G })
+
+// ─── PORTAIL UFO + Speed x2 (début Section 6) ────────────────
+$.add(obj { OBJ_ID: 660, X: 1320*G+OX, Y: GY+3*G })  // UFO portal — vérifier OBJ_ID
+$.add(obj { OBJ_ID: 202, X: 1320*G+OX, Y: GY+3*G })  // Speed x2
+
+// ============================================================
+// FIN SECTION 5 — Section 6 : VOID (UFO+Ball x2) à X=1320
+// ============================================================
+
+// ── vraith_section6.spwn ──────────────────────────────────────────────
+// ============================================================
+// VRAITH — Section 6 : VOID  (UFO x2 + Ball x2)
+// ============================================================
+// BPM     : 200  |  Beat = 0.300s = 72 frames
+// Mode    : UFO x2 (blocs 1320-1500) → Ball x2 (1500-1650)
+// vX x2   : 12.914 b/s  |  1 beat = 3.874 bl ≈ 4 blocs
+// UFO x2  : v0=CUBE_V0*(15.6/15.6) scaled ≈ 0.84bl hauteur (mini) / 2.2bl (normal)
+//           Sauts répétés possible : délai minimal ~10 frames
+// Ball x2 : v0=CUBE_V0*0.6=630 u/s, g=3533 u/s² → H≈1.68bl
+//           Ball : inversion gravité à chaque contact sol/plafond
+// Début   : X=1320 (suite Section 5)
+// ============================================================
+
+
+let S    = 1320
+
+
+// ============================================================
+// COULEUR — violet profond (VOID)
+// ============================================================
+$.add(obj {
+    OBJ_ID: 899,
+    X: S*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1000g,
+    R: 5, G_VAL: 0, B: 15,
+    DURATION: 0.4
+})
+$.add(obj {
+    OBJ_ID: 899,
+    X: S*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1g,
+    R: 120, G_VAL: 0, B: 200,
+    DURATION: 0.4
+})
+
+for i in 0..100 {
+    wait(BEAT * i)
+    1000c.pulse(r=10, g=0, b=30, fade_out=0.2, exclusive=false)
+}
+
+
+// ============================================================
+// SOL ET PLAFOND CONTINU Section 6
+// ============================================================
+for i in 1320..1651 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY })
+}
+
+
+// ============================================================
+// PHASE I1 : UFO x2 — Intro (blocs 1320-1400)
+// UFO : tap = saut simple, hold = multiple sauts
+// Couloir Y=5 → Y=4, obstacles en colonne
+// ============================================================
+
+for i in 1320..1380 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G })
+}
+for i in 1380..1500 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+4*G })
+}
+
+// Colonnes d'obstacles UFO : bloc sol + bloc plafond alternant
+// Joueur doit passer entre les deux
+$.add(obj { OBJ_ID: 1, X: 1325*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 1, X: 1325*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 8, X: 1326*G+OX, Y: GY+3*G })  // Spike
+
+$.add(obj { OBJ_ID: 1, X: 1329*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 1, X: 1329*G+OX, Y: GY+4*G })
+$.add(obj { OBJ_ID: 8, X: 1330*G+OX, Y: GY+G })    // Spike
+
+// Série de colonnes (1 beat = 4 blocs)
+for j in 0..8 {
+    let bx = 1333 + j*4
+    if j % 2 == 0 {
+        // Colonne basse (sol) : joueur monte
+        $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+G })
+        $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+2*G })
+        $.add(obj { OBJ_ID: 8, X: (bx+1)*G+OX, Y: GY+3*G })
+    } else {
+        // Colonne haute (plafond) : joueur descend
+        $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+3*G })
+        $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+4*G })
+        $.add(obj { OBJ_ID: 8, X: (bx+1)*G+OX, Y: GY+G })
+    }
+}
+// Fin à 1333 + 8*4 = 1365
+
+
+// ============================================================
+// PHASE I2 : UFO x2 — Séquence Rings (blocs 1365-1500)
+// Orbes positionnés précisément, spikes entre les orbes
+// UFO peut enchaîner sauts rapides (hold) ou saut unique (tap)
+// ============================================================
+
+// Pattern ring : 3 orbes en série avec spikes intercalés
+$.add(obj { OBJ_ID: 36, X: 1368*G+OX, Y: GY+2*G })  // Orbe jaune
+$.add(obj { OBJ_ID: 8,  X: 1370*G+OX, Y: GY+G })     // Spike sol
+$.add(obj { OBJ_ID: 36, X: 1372*G+OX, Y: GY+3*G })  // Orbe jaune haut
+$.add(obj { OBJ_ID: 8,  X: 1374*G+OX, Y: GY+3*G })   // Spike plafond
+
+$.add(obj { OBJ_ID: 36, X: 1376*G+OX, Y: GY+G })    // Orbe bas
+$.add(obj { OBJ_ID: 8,  X: 1378*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8,  X: 1378*G+OX, Y: GY+3*G })
+
+// Colonnes doubles (joueur slalom entre blocs)
+for k in 0..6 {
+    let bx = 1382 + k*6
+    $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+G })
+    $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+2*G })
+    $.add(obj { OBJ_ID: 1, X: (bx+3)*G+OX, Y: GY+2*G })
+    $.add(obj { OBJ_ID: 1, X: (bx+3)*G+OX, Y: GY+3*G })
+    $.add(obj { OBJ_ID: 8, X: (bx+2)*G+OX, Y: GY+3*G })
+    $.add(obj { OBJ_ID: 8, X: (bx+5)*G+OX, Y: GY+G })
+}
+// Fin à 1382 + 6*6 = 1418
+
+// Faux plafond UFO (groupe 30, alpha trick)
+$.add(obj {
+    OBJ_ID: 1007,
+    X: 1420*G+OX, Y: GY+2*G,
+    TARGET: 30g,
+    ALPHA: 0,
+    DURATION: 0
+})
+for i in 1422..1432 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G, GROUPS: 30g })
+}
+$.add(obj { OBJ_ID: 36, X: 1427*G+OX, Y: GY+3*G })  // Orbe dans le "vide"
+$.add(obj { OBJ_ID: 8,  X: 1429*G+OX, Y: GY+G })
+$.add(obj {
+    OBJ_ID: 1007,
+    X: 1433*G+OX, Y: GY+2*G,
+    TARGET: 30g,
+    ALPHA: 1,
+    DURATION: 0
+})
+
+// Finish UFO : enchaînement spikes serrés
+$.add(obj { OBJ_ID: 8, X: 1436*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1436*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 1440*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 1444*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 1448*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1448*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 1452*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 1456*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 1460*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 1464*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 1468*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1468*G+OX, Y: GY+3*G })
+// 6 double-spikes en 16 blocs = 4 beats
+
+
+// ─── PORTAIL BALL x2 (bloc 1500) ─────────────────────────────
+$.add(obj { OBJ_ID: 660, X: 1500*G+OX, Y: GY+2*G })  // Ball portal — vérifier OBJ_ID
+
+
+// ============================================================
+// PHASE J1 : Ball x2 — Intro (blocs 1500-1575)
+// Ball : gravité inversée à chaque contact sol/plafond
+// H_saut ≈ 1.68 bl (v0=630 u/s à x2)
+// Timing : pression = forcer inversion immédiate (pas auto)
+// Couloir 4bl, rythme sur les contacts
+// ============================================================
+
+for i in 1500..1575 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G })
+}
+
+// Ball pattern : sol → plafond → sol en rythme (1 beat = 4 blocs)
+// Les spikes forcent l'inversion au bon moment
+$.add(obj { OBJ_ID: 8, X: 1504*G+OX, Y: GY+G   })  // Spike sol beat 1
+$.add(obj { OBJ_ID: 8, X: 1508*G+OX, Y: GY+4*G })  // Spike plafond beat 2
+$.add(obj { OBJ_ID: 8, X: 1512*G+OX, Y: GY+G   })  // Spike sol beat 3
+$.add(obj { OBJ_ID: 8, X: 1516*G+OX, Y: GY+4*G })  // Spike plafond beat 4
+
+// Orbe jaune (saut forcé en plein air) beat 5
+$.add(obj { OBJ_ID: 36, X: 1519*G+OX, Y: GY+2*G })
+
+// Double contact obligatoire (blocs 1520-1540)
+$.add(obj { OBJ_ID: 8, X: 1522*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1522*G+OX, Y: GY+4*G })
+$.add(obj { OBJ_ID: 8, X: 1526*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1530*G+OX, Y: GY+4*G })
+$.add(obj { OBJ_ID: 8, X: 1534*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1534*G+OX, Y: GY+4*G })
+
+
+// ============================================================
+// PHASE J2 : Ball x2 — Boss section (blocs 1575-1650)
+// Couloir Y=3, obstacles en sol et plafond serrés
+// Série d'orbes + spikes en rythme 0.5 beat
+// ============================================================
+
+for i in 1575..1650 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+4*G })
+}
+
+// Rythme 0.5 beat = 2 blocs
+$.add(obj { OBJ_ID: 8, X: 1578*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1580*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 1582*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1584*G+OX, Y: GY+3*G })
+
+// Séquence orbe-spike (hall of fame ball pattern)
+for m in 0..8 {
+    let bx = 1586 + m*8
+    $.add(obj { OBJ_ID: 36, X: bx*G+OX, Y: GY+G })       // Orbe bas
+    $.add(obj { OBJ_ID: 8,  X: (bx+2)*G+OX, Y: GY+3*G }) // Spike haut
+    $.add(obj { OBJ_ID: 36, X: (bx+4)*G+OX, Y: GY+3*G }) // Orbe haut
+    $.add(obj { OBJ_ID: 8,  X: (bx+6)*G+OX, Y: GY+G })   // Spike bas
+}
+// Fin à 1586 + 8*8 = 1650
+
+// ─── PORTAIL CUBE + Speed x2 (début Section 7) ───────────────
+$.add(obj { OBJ_ID: 12,  X: 1648*G+OX, Y: GY+2*G })  // Cube portal
+$.add(obj { OBJ_ID: 202, X: 1648*G+OX, Y: GY+2*G })  // Speed x2
+
+// ============================================================
+// FIN SECTION 6 — Section 7 : STORM (Wave x4 boss) à X=1648
+// ============================================================
+
+// ── vraith_section7.spwn ──────────────────────────────────────────────
+// ============================================================
+// VRAITH — Section 7 : STORM  (Wave x4 — boss ultime)
+// ============================================================
+// BPM     : 200  |  Beat = 0.300s = 72 frames
+// Mode    : Cube x2 (1648-1720) → Wave x4 (1720-1970)
+// vX x4   : 19.200 b/s  |  1 beat = 5.760 bl ≈ 6 blocs
+// Wave x4 : vy=±vx=19.2 b/s — section la plus rapide du level
+//           0.5 beat = 2.88 bl ≈ 3 blocs (demi-amplitude)
+// Couloir  : 1.5 bl minimum Extreme Demon
+// Début   : X=1648 (suite Section 6)
+// ============================================================
+
+
+let S    = 1648
+
+
+// ============================================================
+// COULEUR — rouge sang + flash blanc (STORM)
+// ============================================================
+$.add(obj {
+    OBJ_ID: 899,
+    X: S*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1000g,
+    R: 20, G_VAL: 0, B: 0,
+    DURATION: 0.2
+})
+$.add(obj {
+    OBJ_ID: 899,
+    X: S*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1g,
+    R: 255, G_VAL: 30, B: 30,
+    DURATION: 0.2
+})
+
+// Pulse rapide agressif (0.15 beat)
+for i in 0..120 {
+    wait(0.15 * i)
+    1000c.pulse(r=40, g=0, b=0, fade_out=0.1, exclusive=false)
+}
+
+
+// ============================================================
+// SOL CONTINU Section 7
+// ============================================================
+for i in 1648..1971 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY })
+}
+
+
+// ============================================================
+// PHASE K1 : Cube x2 — Transition (blocs 1648-1720)
+// Prépare le joueur pour Wave x4 : tempo + couloir
+// ============================================================
+
+// Plafond cube K1
+for i in 1648..1720 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G })
+}
+
+// 4 spikes signature (signature bloc avant drop x4)
+$.add(obj { OBJ_ID: 8, X: 1652*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 1656*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 1660*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 1664*G+OX, Y: GY+G })
+
+// Portail Speed x4 (annonce le changement)
+$.add(obj { OBJ_ID: 1334, X: 1668*G+OX, Y: GY+G })  // Speed x4 portal
+
+// Double spike + orbe (build-up)
+$.add(obj { OBJ_ID: 8,  X: 1672*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8,  X: 1672*G+OX, Y: GY+4*G })
+$.add(obj { OBJ_ID: 36, X: 1676*G+OX, Y: GY+G })    // Orbe jaune
+$.add(obj { OBJ_ID: 8,  X: 1680*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8,  X: 1680*G+OX, Y: GY+4*G })
+$.add(obj { OBJ_ID: 36, X: 1684*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8,  X: 1688*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8,  X: 1692*G+OX, Y: GY+4*G })
+$.add(obj { OBJ_ID: 8,  X: 1696*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8,  X: 1696*G+OX, Y: GY+4*G })
+
+// Portail Wave (drop brutal)
+$.add(obj { OBJ_ID: 660, X: 1720*G+OX, Y: GY+3*G })  // Wave portal
+
+
+// ============================================================
+// PHASE K2 : Wave x4 — Corridor serré (blocs 1720-1810)
+// 1 beat = 5.76 bl, corridors 2 blocs, zigzag agressif
+// ============================================================
+
+// Plafond Y=3 — couloir 2 blocs strict
+for i in 1720..1810 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G })
+}
+
+// Zigzag x4 : demi-beat = 2.88 bl ≈ 3 blocs
+// Alternance haut/bas toutes les 3 blocs
+$.add(obj { OBJ_ID: 8, X: 1723*G+OX, Y: GY+G })     // Spike sol
+$.add(obj { OBJ_ID: 8, X: 1726*G+OX, Y: GY+2*G })   // Spike haut
+$.add(obj { OBJ_ID: 8, X: 1729*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 1732*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 8, X: 1735*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 1738*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 8, X: 1741*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 1744*G+OX, Y: GY+2*G })
+
+// OUVERTURE SOUDAINE + double trap (Bloodbath style)
+for i in 1748..1760 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+6*G })
+}
+$.add(obj { OBJ_ID: 8, X: 1749*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1749*G+OX, Y: GY+5*G })
+$.add(obj { OBJ_ID: 8, X: 1754*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1754*G+OX, Y: GY+5*G })
+
+// Retour couloir ultra-serré Y=2
+for i in 1760..1810 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+2*G })
+}
+for k in 0..10 {
+    $.add(obj { OBJ_ID: 8, X: (1762+k*5)*G+OX, Y: GY+G })  // 1 spike/beat
+}
+
+
+// ============================================================
+// PHASE K3 : Wave x4 — Mini wave boss (blocs 1810-1900)
+// Portail mini : hitbox réduite, couloir 1.5 bl "jouable"
+// ============================================================
+
+// Portail mini
+$.add(obj { OBJ_ID: 99, X: 1810*G+OX, Y: GY+G })  // Mini on
+
+for i in 1810..1900 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+2*G })
+}
+
+// Mini wave : spikes 1 par beat (6 blocs à x4) — TRÈS dense
+for k in 0..15 {
+    $.add(obj { OBJ_ID: 8, X: (1813+k*6)*G+OX, Y: GY+G })
+}
+// Avec zigzag plafond intercalé (tous les 3 blocs)
+for k in 0..15 {
+    if k % 3 == 1 {
+        $.add(obj { OBJ_ID: 8, X: (1815+k*6)*G+OX, Y: GY+G })
+    }
+}
+
+$.add(obj { OBJ_ID: 101, X: 1900*G+OX, Y: GY+G })  // Normal size
+
+
+// ============================================================
+// PHASE K4 : Wave x4 — Finale / Climax (blocs 1900-1970)
+// Séquence finale avant Section 8 (multi-mode finale)
+// Murs + spikes croisés à rythme extrême
+// ============================================================
+
+for i in 1900..1970 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+4*G })
+}
+
+// Murs verticaux slalom (comme Section 3 mais à x4)
+for j in 0..8 {
+    let bx = 1903 + j*8
+    $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+2*G })
+    $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+3*G })
+    $.add(obj { OBJ_ID: 1, X: (bx+3)*G+OX, Y: GY+G })
+    $.add(obj { OBJ_ID: 1, X: (bx+3)*G+OX, Y: GY+2*G })
+    $.add(obj { OBJ_ID: 8, X: (bx+5)*G+OX, Y: GY+3*G })
+}
+// Fin slalom : 1903 + 8*8 = 1967
+
+// Spike triple final (last pattern avant cube)
+$.add(obj { OBJ_ID: 8, X: 1963*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1963*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 1966*G+OX, Y: GY+G   })
+
+// ─── PORTAIL CUBE + Speed x1 (Section 8 : outro) ─────────────
+$.add(obj { OBJ_ID: 12,  X: 1970*G+OX, Y: GY+2*G })  // Cube portal
+$.add(obj { OBJ_ID: 200, X: 1970*G+OX, Y: GY+2*G })  // Speed x1 (ralentissement)
+
+// ============================================================
+// FIN SECTION 7 — Section 8 : REQUIEM (multi-mode finale) à X=1970
+// ============================================================
+
+// ── vraith_section8.spwn ──────────────────────────────────────────────
+// ============================================================
+// VRAITH — Section 8 : REQUIEM  (Multi-mode finale)
+// ============================================================
+// BPM     : 200  |  Beat = 0.300s = 72 frames
+// Mode    : Cube x1 (1970-2080) → Spider x2 (2080-2160)
+//           → Wave x2 (2160-2240) → Cube x1 (2240-2340)
+// vX x1   : 10.386 b/s  |  1 beat = 3.116 bl ≈ 3 blocs
+// Spider  : Teleport sol/plafond instantané à l'appui
+// Début   : X=1970 (suite Section 7)
+// ============================================================
+
+
+let S    = 1970
+
+
+// ============================================================
+// COULEUR — bleu nuit → dégradé lumière (REQUIEM)
+// ============================================================
+$.add(obj {
+    OBJ_ID: 899,
+    X: S*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1000g,
+    R: 0, G_VAL: 5, B: 20,
+    DURATION: 0.8
+})
+$.add(obj {
+    OBJ_ID: 899,
+    X: S*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1g,
+    R: 30, G_VAL: 80, B: 220,
+    DURATION: 0.8
+})
+
+// Pulse lent (finale plus émotionnelle)
+for i in 0..60 {
+    wait(BEAT * 2 * i)  // 1 pulse par 2 beats
+    1000c.pulse(r=10, g=20, b=60, fade_out=0.5, exclusive=false)
+}
+
+
+// ============================================================
+// SOL CONTINU Section 8
+// ============================================================
+for i in 1970..2341 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY })
+}
+
+
+// ============================================================
+// PHASE L1 : Cube x1 — Descente calme (blocs 1970-2080)
+// Ralentissement après Storm : x1 = retour aux bases
+// Plafond ouvert Y=6, obstacles rythme régulier
+// ============================================================
+
+for i in 1970..2080 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+6*G })
+}
+
+// Rythme x1 : 1 beat = 3 blocs
+$.add(obj { OBJ_ID: 8, X: 1973*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 1976*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 1979*G+OX, Y: GY+G })
+
+// Bloc double (saut + saut)
+$.add(obj { OBJ_ID: 1, X: 1982*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 1, X: 1982*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 8, X: 1984*G+OX, Y: GY+G })
+
+$.add(obj { OBJ_ID: 1, X: 1987*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 1, X: 1987*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 1, X: 1987*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 1990*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 1990*G+OX, Y: GY+5*G })
+
+// Orbe rouge (saut court précis)
+$.add(obj { OBJ_ID: 84, X: 1993*G+OX, Y: GY+G })
+
+$.add(obj { OBJ_ID: 8, X: 1996*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 1999*G+OX, Y: GY+5*G })
+
+// Série de blocs ascendants (escalier x1)
+for j in 0..5 {
+    let bx = 2002 + j*6
+    for h in 0..(j+1) {
+        $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+h*G })
+    }
+    $.add(obj { OBJ_ID: 8, X: (bx+2)*G+OX, Y: GY+G })
+}
+// Fin escalier : 2002 + 5*6 = 2032
+
+// Corridors serrés blocs 2032-2080
+for i in 2032..2080 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+4*G })
+}
+$.add(obj { OBJ_ID: 8, X: 2035*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 2035*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 2039*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 2043*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 2047*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 2047*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 2051*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 2055*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 2059*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 2059*G+OX, Y: GY+3*G })
+
+// Speed x2 portail bloc 2065 (accélère pour Spider)
+$.add(obj { OBJ_ID: 202, X: 2065*G+OX, Y: GY+G })
+
+
+// ─── PORTAIL SPIDER x2 (bloc 2080) ───────────────────────────
+$.add(obj { OBJ_ID: 660, X: 2080*G+OX, Y: GY+2*G })  // Spider portal — vérifier OBJ_ID
+
+
+// ============================================================
+// PHASE L2 : Spider x2 — Section web (blocs 2080-2160)
+// Spider : téléportation instantanée sol↔plafond
+// Couloir Y=5, plateformes intermédiaires pour atterrissage
+// 1 beat x2 = 3.874 bl ≈ 4 blocs
+// ============================================================
+
+for i in 2080..2160 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+6*G })
+}
+
+// Plateformes Spider : le joueur atterrit dessus après téléportation
+// Plateforme bas (sol) = Y=0 (défaut)
+// Plateforme milieu flottante = à Y=3 (groupe 40)
+for i in 2082..2086 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G, GROUPS: 40g })
+}
+$.add(obj { OBJ_ID: 8, X: 2086*G+OX, Y: GY+4*G })  // Spike dessus milieu
+
+for i in 2090..2094 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G, GROUPS: 40g })
+}
+$.add(obj { OBJ_ID: 8, X: 2094*G+OX, Y: GY+G })
+
+// Série Spider rythme : plateformes + spikes alternés
+for k in 0..8 {
+    let bx = 2096 + k*8
+    // Plateforme milieu (atterrissage après téléport)
+    $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+3*G })
+    $.add(obj { OBJ_ID: 1, X: (bx+1)*G+OX, Y: GY+3*G })
+    // Spike qui force téléportation
+    $.add(obj { OBJ_ID: 8, X: (bx+2)*G+OX, Y: GY+3*G })
+    // Spike sol/plafond alterné
+    if k % 2 == 0 {
+        $.add(obj { OBJ_ID: 8, X: (bx+4)*G+OX, Y: GY+G })
+    } else {
+        $.add(obj { OBJ_ID: 8, X: (bx+4)*G+OX, Y: GY+5*G })
+    }
+}
+// Fin : 2096 + 8*8 = 2160
+
+// ─── PORTAIL WAVE x2 (bloc 2160) ─────────────────────────────
+$.add(obj { OBJ_ID: 660, X: 2160*G+OX, Y: GY+3*G })  // Wave portal
+
+
+// ============================================================
+// PHASE L3 : Wave x2 — Segment nostalgique (blocs 2160-2240)
+// Rappel Section 3 mais plus propre, tempo modéré
+// Couloir 2.5 blocs, zigzag au rythme
+// ============================================================
+
+for i in 2160..2240 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G })
+}
+
+// Zigzag x2 (4 blocs/beat) : pattern familier mais épuré
+for k in 0..10 {
+    let bx = 2164 + k*8
+    // HAUT
+    $.add(obj { OBJ_ID: 8, X: bx*G+OX, Y: GY+G })
+    // BAS
+    $.add(obj { OBJ_ID: 8, X: (bx+4)*G+OX, Y: GY+2*G })
+}
+
+// Slalom murs (finale wave)
+for j in 0..4 {
+    let bx = 2200 + j*9
+    $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+2*G })
+    $.add(obj { OBJ_ID: 1, X: (bx+3)*G+OX, Y: GY+G })
+    $.add(obj { OBJ_ID: 1, X: (bx+3)*G+OX, Y: GY+2*G })
+    $.add(obj { OBJ_ID: 8, X: (bx+6)*G+OX, Y: GY+2*G })
+}
+
+// ─── PORTAIL CUBE x1 (fin Wave) ──────────────────────────────
+$.add(obj { OBJ_ID: 12,  X: 2240*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 200, X: 2240*G+OX, Y: GY+2*G })  // Speed x1
+
+
+// ============================================================
+// PHASE L4 : Cube x1 — Outro émotion (blocs 2240-2340)
+// Ralentissement final, obstacles symboliques (1 par mesure)
+// Dernier challenge avant outro
+// ============================================================
+
+for i in 2240..2340 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+7*G })
+}
+
+// Blocs iconiques (1 par 2 beats = 6 blocs)
+for j in 0..8 {
+    let bx = 2244 + j*6
+    $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+G })
+    $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+2*G })
+    $.add(obj { OBJ_ID: 8, X: (bx+2)*G+OX, Y: GY+G })
+}
+// Fin 2244 + 8*6 = 2292
+
+// Escalier final (build-up outro)
+for j in 0..5 {
+    let bx = 2295 + j*5
+    for h in 0..(j+1) {
+        $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+h*G })
+    }
+}
+// Fin 2295 + 5*5 = 2320
+
+// Double spike final signature
+$.add(obj { OBJ_ID: 8, X: 2324*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 2324*G+OX, Y: GY+6*G })
+$.add(obj { OBJ_ID: 8, X: 2328*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 2328*G+OX, Y: GY+6*G })
+$.add(obj { OBJ_ID: 8, X: 2332*G+OX, Y: GY+G   })
+
+// Orbe jaune final
+$.add(obj { OBJ_ID: 36, X: 2335*G+OX, Y: GY+G })
+
+// ─── PORTAIL CUBE (outro) → Section 9 ────────────────────────
+$.add(obj { OBJ_ID: 12, X: 2340*G+OX, Y: GY+2*G })
+
+// ============================================================
+// FIN SECTION 8 — Section 9 : ABYSS (outro) à X=2340
+// ============================================================
+
+// ── vraith_section9.spwn ──────────────────────────────────────────────
+// ============================================================
+// VRAITH — Section 9 : ABYSS  (Outro cube + fin)
+// ============================================================
+// BPM     : 200  |  Beat = 0.300s = 72 frames
+// Mode    : Cube x1 (2340-2500) → Cube x0.5 (2500-2600, outro)
+// vX x1   : 10.386 b/s  |  1 beat = 3.116 bl ≈ 3 blocs
+// vX x0.5 : 8.372 b/s   |  1 beat = 2.512 bl ≈ 3 blocs (très lent)
+// Caractère : résolution, satisfaction, "GG screen" coming
+// Début   : X=2340 (suite Section 8)
+// ============================================================
+
+
+let S    = 2340
+
+
+// ============================================================
+// COULEUR — doré (victoire imminente)
+// ============================================================
+$.add(obj {
+    OBJ_ID: 899,
+    X: S*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1000g,
+    R: 30, G_VAL: 25, B: 0,
+    DURATION: 1.2
+})
+$.add(obj {
+    OBJ_ID: 899,
+    X: S*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1g,
+    R: 255, G_VAL: 220, B: 50,
+    DURATION: 1.2
+})
+
+// Pulse doré lent
+for i in 0..50 {
+    wait(BEAT * 3 * i)  // 1 pulse par 3 beats
+    1000c.pulse(r=40, g=35, b=0, fade_out=0.8, exclusive=false)
+}
+
+
+// ============================================================
+// SOL CONTINU Section 9
+// ============================================================
+for i in 2340..2601 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY })
+}
+
+
+// ============================================================
+// PHASE M1 : Cube x1 — Décompression (blocs 2340-2440)
+// Plafond haut, obstacles rares, musique qui descend
+// Joueur respire après 7 sections extrêmes
+// ============================================================
+
+// Plafond très haut : Y=8
+for i in 2340..2440 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+8*G })
+}
+
+// Obstacles symboliques (1 tous les 4 beats = 12 blocs)
+// Rappel des sections précédentes : cube / ship / wave / robot
+// Cube bloc simple (Section 1)
+$.add(obj { OBJ_ID: 1, X: 2346*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 2348*G+OX, Y: GY+G })
+
+// Bloc double (Section 2 style)
+$.add(obj { OBJ_ID: 1, X: 2358*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 1, X: 2358*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 8, X: 2360*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 2360*G+OX, Y: GY+3*G })
+
+// Escalier (Section 4 style)
+$.add(obj { OBJ_ID: 1, X: 2370*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 1, X: 2371*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 1, X: 2371*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 8, X: 2373*G+OX, Y: GY+G })
+
+// Triple spike (signature VRAITH)
+$.add(obj { OBJ_ID: 8, X: 2382*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 2385*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 2388*G+OX, Y: GY+G })
+
+// Orbe jaune isolé (clin d'oeil)
+$.add(obj { OBJ_ID: 36, X: 2400*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8,  X: 2403*G+OX, Y: GY+G })
+
+// Bloc + spike (simple et propre)
+$.add(obj { OBJ_ID: 1, X: 2412*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 2414*G+OX, Y: GY+G })
+
+$.add(obj { OBJ_ID: 1, X: 2422*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 1, X: 2422*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 8, X: 2424*G+OX, Y: GY+G })
+
+
+// ============================================================
+// PHASE M2 : Cube x1 → x0.5 — Outro (blocs 2440-2600)
+// Ralentissement progressif, obstacles de plus en plus rares
+// Les 60 derniers blocs : 1 seul obstacle symbolique
+// ============================================================
+
+// Portail x0.5 (ralentissement)
+$.add(obj { OBJ_ID: 200, X: 2500*G+OX, Y: GY+G })  // Speed x0.5 portal
+
+// Plafond qui monte progressivement (horizon qui s'ouvre)
+for i in 2440..2500 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+(8 + (i-2440)/10)*G })
+}
+// 2440..2500 → plafond de Y=8 à Y=14
+
+// Quelques blocs rappel (1 tous les 20 blocs)
+$.add(obj { OBJ_ID: 8, X: 2450*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 2468*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 1, X: 2485*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 2487*G+OX, Y: GY+G })
+
+// Depuis le portail x0.5 : tout ralentit
+// Dernier obstacle : triple spike (3 blocs = 1+ beat à x0.5)
+$.add(obj { OBJ_ID: 8, X: 2520*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 2523*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 2526*G+OX, Y: GY+G })
+
+// DERNIER BLOC : 1 spike seul à mi-parcours x0.5
+$.add(obj { OBJ_ID: 8, X: 2560*G+OX, Y: GY+G })
+
+// Les 40 derniers blocs (2560-2600) : VIDE
+// Le joueur court, la musique finit, la victoire arrive
+
+// ============================================================
+// MARKER FIN : Texte END à bloc 2595
+// ============================================================
+// (Trigger texte — OBJ_ID varie selon version GD)
+// Panneau "GG" via color trigger + text object si disponible
+
+// Flash blanc final (beat de fin)
+$.add(obj {
+    OBJ_ID: 899,
+    X: 2590*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1000g,
+    R: 255, G_VAL: 255, B: 255,
+    DURATION: 0.5
+})
+$.add(obj {
+    OBJ_ID: 899,
+    X: 2595*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1000g,
+    R: 0, G_VAL: 0, B: 0,
+    DURATION: 2.0
+})
+$.add(obj {
+    OBJ_ID: 899,
+    X: 2595*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1g,
+    R: 0, G_VAL: 0, B: 0,
+    DURATION: 2.0
+})
+
+// ============================================================
+// FIN VRAITH — ABYSS (X=2340-2600)
+// Total : ~2600 blocs — durée ~167s à vitesse moyenne
+// BPM 200 — ~556 beats — ~6.9 minutes
+// ============================================================
+// Structure complète :
+//   S1 AWAKENING  : Cube x1/x2/x3   (  0- 258 blocs,  ~16s)
+//   S2 DESCENT    : Ship x3          (258- 537 blocs,  ~18s)
+//   S3 CORRUPTION : Wave x2/x3       (537- 808 blocs,  ~17s)
+//   S4 APEX       : Cube+Robot x2    (808-1050 blocs,  ~15s)
+//   S5 ECLIPSE    : Ship+Wave x3     (1050-1320 blocs, ~17s)
+//   S6 VOID       : UFO+Ball x2      (1320-1648 blocs, ~25s)
+//   S7 STORM      : Wave x4          (1648-1970 blocs, ~17s)
+//   S8 REQUIEM    : Multi-mode       (1970-2340 blocs, ~36s)
+//   S9 ABYSS      : Outro x1/x0.5   (2340-2600 blocs, ~26s)
+// ============================================================

@@ -1,0 +1,239 @@
+// ============================================================
+// VRAITH — Section 8 : REQUIEM  (Multi-mode finale)
+// ============================================================
+// BPM     : 200  |  Beat = 0.300s = 72 frames
+// Mode    : Cube x1 (1970-2080) → Spider x2 (2080-2160)
+//           → Wave x2 (2160-2240) → Cube x1 (2240-2340)
+// vX x1   : 10.386 b/s  |  1 beat = 3.116 bl ≈ 3 blocs
+// Spider  : Teleport sol/plafond instantané à l'appui
+// Début   : X=1970 (suite Section 7)
+// ============================================================
+
+let BEAT = 0.3
+let OX   = 195
+let GY   = 105
+let G    = 30
+
+let S    = 1970
+
+
+// ============================================================
+// COULEUR — bleu nuit → dégradé lumière (REQUIEM)
+// ============================================================
+$.add(obj {
+    OBJ_ID: 899,
+    X: S*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1000g,
+    R: 0, G_VAL: 5, B: 20,
+    DURATION: 0.8
+})
+$.add(obj {
+    OBJ_ID: 899,
+    X: S*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1g,
+    R: 30, G_VAL: 80, B: 220,
+    DURATION: 0.8
+})
+
+// Pulse lent (finale plus émotionnelle)
+for i in 0..60 {
+    wait(BEAT * 2 * i)  // 1 pulse par 2 beats
+    1000c.pulse(r=10, g=20, b=60, fade_out=0.5, exclusive=false)
+}
+
+
+// ============================================================
+// SOL CONTINU Section 8
+// ============================================================
+for i in 1970..2341 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY })
+}
+
+
+// ============================================================
+// PHASE L1 : Cube x1 — Descente calme (blocs 1970-2080)
+// Ralentissement après Storm : x1 = retour aux bases
+// Plafond ouvert Y=6, obstacles rythme régulier
+// ============================================================
+
+for i in 1970..2080 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+6*G })
+}
+
+// Rythme x1 : 1 beat = 3 blocs
+$.add(obj { OBJ_ID: 8, X: 1973*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 1976*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 1979*G+OX, Y: GY+G })
+
+// Bloc double (saut + saut)
+$.add(obj { OBJ_ID: 1, X: 1982*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 1, X: 1982*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 8, X: 1984*G+OX, Y: GY+G })
+
+$.add(obj { OBJ_ID: 1, X: 1987*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 1, X: 1987*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 1, X: 1987*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 1990*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 1990*G+OX, Y: GY+5*G })
+
+// Orbe rouge (saut court précis)
+$.add(obj { OBJ_ID: 84, X: 1993*G+OX, Y: GY+G })
+
+$.add(obj { OBJ_ID: 8, X: 1996*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 1999*G+OX, Y: GY+5*G })
+
+// Série de blocs ascendants (escalier x1)
+for j in 0..5 {
+    let bx = 2002 + j*6
+    for h in 0..(j+1) {
+        $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+h*G })
+    }
+    $.add(obj { OBJ_ID: 8, X: (bx+2)*G+OX, Y: GY+G })
+}
+// Fin escalier : 2002 + 5*6 = 2032
+
+// Corridors serrés blocs 2032-2080
+for i in 2032..2080 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+4*G })
+}
+$.add(obj { OBJ_ID: 8, X: 2035*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 2035*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 2039*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 2043*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 2047*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 2047*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 2051*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 2055*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 2059*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 2059*G+OX, Y: GY+3*G })
+
+// Speed x2 portail bloc 2065 (accélère pour Spider)
+$.add(obj { OBJ_ID: 202, X: 2065*G+OX, Y: GY+G })
+
+
+// ─── PORTAIL SPIDER x2 (bloc 2080) ───────────────────────────
+$.add(obj { OBJ_ID: 660, X: 2080*G+OX, Y: GY+2*G })  // Spider portal — vérifier OBJ_ID
+
+
+// ============================================================
+// PHASE L2 : Spider x2 — Section web (blocs 2080-2160)
+// Spider : téléportation instantanée sol↔plafond
+// Couloir Y=5, plateformes intermédiaires pour atterrissage
+// 1 beat x2 = 3.874 bl ≈ 4 blocs
+// ============================================================
+
+for i in 2080..2160 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+6*G })
+}
+
+// Plateformes Spider : le joueur atterrit dessus après téléportation
+// Plateforme bas (sol) = Y=0 (défaut)
+// Plateforme milieu flottante = à Y=3 (groupe 40)
+for i in 2082..2086 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G, GROUPS: 40g })
+}
+$.add(obj { OBJ_ID: 8, X: 2086*G+OX, Y: GY+4*G })  // Spike dessus milieu
+
+for i in 2090..2094 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G, GROUPS: 40g })
+}
+$.add(obj { OBJ_ID: 8, X: 2094*G+OX, Y: GY+G })
+
+// Série Spider rythme : plateformes + spikes alternés
+for k in 0..8 {
+    let bx = 2096 + k*8
+    // Plateforme milieu (atterrissage après téléport)
+    $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+3*G })
+    $.add(obj { OBJ_ID: 1, X: (bx+1)*G+OX, Y: GY+3*G })
+    // Spike qui force téléportation
+    $.add(obj { OBJ_ID: 8, X: (bx+2)*G+OX, Y: GY+3*G })
+    // Spike sol/plafond alterné
+    if k % 2 == 0 {
+        $.add(obj { OBJ_ID: 8, X: (bx+4)*G+OX, Y: GY+G })
+    } else {
+        $.add(obj { OBJ_ID: 8, X: (bx+4)*G+OX, Y: GY+5*G })
+    }
+}
+// Fin : 2096 + 8*8 = 2160
+
+// ─── PORTAIL WAVE x2 (bloc 2160) ─────────────────────────────
+$.add(obj { OBJ_ID: 660, X: 2160*G+OX, Y: GY+3*G })  // Wave portal
+
+
+// ============================================================
+// PHASE L3 : Wave x2 — Segment nostalgique (blocs 2160-2240)
+// Rappel Section 3 mais plus propre, tempo modéré
+// Couloir 2.5 blocs, zigzag au rythme
+// ============================================================
+
+for i in 2160..2240 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G })
+}
+
+// Zigzag x2 (4 blocs/beat) : pattern familier mais épuré
+for k in 0..10 {
+    let bx = 2164 + k*8
+    // HAUT
+    $.add(obj { OBJ_ID: 8, X: bx*G+OX, Y: GY+G })
+    // BAS
+    $.add(obj { OBJ_ID: 8, X: (bx+4)*G+OX, Y: GY+2*G })
+}
+
+// Slalom murs (finale wave)
+for j in 0..4 {
+    let bx = 2200 + j*9
+    $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+2*G })
+    $.add(obj { OBJ_ID: 1, X: (bx+3)*G+OX, Y: GY+G })
+    $.add(obj { OBJ_ID: 1, X: (bx+3)*G+OX, Y: GY+2*G })
+    $.add(obj { OBJ_ID: 8, X: (bx+6)*G+OX, Y: GY+2*G })
+}
+
+// ─── PORTAIL CUBE x1 (fin Wave) ──────────────────────────────
+$.add(obj { OBJ_ID: 12,  X: 2240*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 200, X: 2240*G+OX, Y: GY+2*G })  // Speed x1
+
+
+// ============================================================
+// PHASE L4 : Cube x1 — Outro émotion (blocs 2240-2340)
+// Ralentissement final, obstacles symboliques (1 par mesure)
+// Dernier challenge avant outro
+// ============================================================
+
+for i in 2240..2340 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+7*G })
+}
+
+// Blocs iconiques (1 par 2 beats = 6 blocs)
+for j in 0..8 {
+    let bx = 2244 + j*6
+    $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+G })
+    $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+2*G })
+    $.add(obj { OBJ_ID: 8, X: (bx+2)*G+OX, Y: GY+G })
+}
+// Fin 2244 + 8*6 = 2292
+
+// Escalier final (build-up outro)
+for j in 0..5 {
+    let bx = 2295 + j*5
+    for h in 0..(j+1) {
+        $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+h*G })
+    }
+}
+// Fin 2295 + 5*5 = 2320
+
+// Double spike final signature
+$.add(obj { OBJ_ID: 8, X: 2324*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 2324*G+OX, Y: GY+6*G })
+$.add(obj { OBJ_ID: 8, X: 2328*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 2328*G+OX, Y: GY+6*G })
+$.add(obj { OBJ_ID: 8, X: 2332*G+OX, Y: GY+G   })
+
+// Orbe jaune final
+$.add(obj { OBJ_ID: 36, X: 2335*G+OX, Y: GY+G })
+
+// ─── PORTAIL CUBE (outro) → Section 9 ────────────────────────
+$.add(obj { OBJ_ID: 12, X: 2340*G+OX, Y: GY+2*G })
+
+// ============================================================
+// FIN SECTION 8 — Section 9 : ABYSS (outro) à X=2340
+// ============================================================

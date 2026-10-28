@@ -1,0 +1,269 @@
+// ============================================================
+// VRAITH — Section 4 : APEX  (Cube x2 + Robot x2)
+// ============================================================
+// BPM     : 200  |  Beat = 0.300s = 72 frames
+// Mode    : Cube x2 (blocs 808-930) → Robot x2 (930-1050)
+// vX x2   : 12.914 b/s  |  1 beat = 3.874 bl ≈ 4 blocs
+// Cube    : v0=1050 u/s, g=3533 u/s², H=5.196 bl, t=0.594s
+//           x2 : H×0.855=4.44bl, t×0.855=0.508s (vX scale)
+// Robot   : v0=[525..1050] u/s selon hold duration
+//           Robot x2 : mini sauts 1.5-2bl, grands sauts 3-4bl
+// Début   : X=808 (suite Section 3)
+// ============================================================
+
+let BEAT = 0.3
+let OX   = 195
+let GY   = 105
+let G    = 30
+
+let S    = 808  // Bloc de départ section 4
+
+
+// ============================================================
+// COULEUR — blanc électrique (APEX climax)
+// ============================================================
+$.add(obj {
+    OBJ_ID: 899,
+    X: S*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1000g,
+    R: 15, G_VAL: 15, B: 30,
+    DURATION: 0.4
+})
+$.add(obj {
+    OBJ_ID: 899,
+    X: S*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1g,
+    R: 255, G_VAL: 255, B: 255,
+    DURATION: 0.4
+})
+
+// Pulse blanc → retour couleur
+for i in 0..80 {
+    wait(BEAT * i)
+    1000c.pulse(r=10, g=10, b=20, fade_out=0.2, exclusive=false)
+}
+
+
+// ============================================================
+// PHASE F1 : Cube x2 — Reprise (blocs 808-860, beats 0-13)
+// Transition wave → cube : couloir modéré, calibration saut x2
+// ============================================================
+// Sol continu S4
+for i in 808..1051 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY })
+}
+
+// Plafond départ large (Y=6) → réduction progressive
+for i in 808..828 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+6*G })
+}
+for i in 828..848 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G })
+}
+
+// F1 : Spikes d'introduction au rythme — 1/beat (4 blocs à x2)
+// Cube x2 : 1 beat = 3.874 bl ≈ 4 blocs
+$.add(obj { OBJ_ID: 8, X: 812*G+OX, Y: GY+G })  // Beat 1
+$.add(obj { OBJ_ID: 8, X: 816*G+OX, Y: GY+G })  // Beat 2
+$.add(obj { OBJ_ID: 8, X: 820*G+OX, Y: GY+G })  // Beat 3
+$.add(obj { OBJ_ID: 8, X: 824*G+OX, Y: GY+G })  // Beat 4
+// Double spike beat 5
+$.add(obj { OBJ_ID: 8, X: 828*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 828*G+OX, Y: GY+4*G })
+// Pattern alternant haut/bas beat 6-10
+$.add(obj { OBJ_ID: 8, X: 832*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 836*G+OX, Y: GY+4*G })
+$.add(obj { OBJ_ID: 8, X: 840*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 844*G+OX, Y: GY+4*G })
+$.add(obj { OBJ_ID: 8, X: 848*G+OX, Y: GY+G })
+
+// Orbe jaune (saut forcé par-dessus spike à Y=1) beat 10-11
+$.add(obj { OBJ_ID: 36, X: 849*G+OX, Y: GY+G })  // Orbe jaune
+
+
+// ============================================================
+// PHASE F2 : Cube x2 — Escalier inversé serré (blocs 852-900)
+// Plafond Y=4 fixe, obstacles en escalier descendant
+// ============================================================
+
+for i in 848..930 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+4*G })
+}
+
+// Escalier bas : plateformes montant (joueur saute par-dessus)
+$.add(obj { OBJ_ID: 1, X: 852*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 1, X: 852*G+OX, Y: GY+2*G })  // Bloc Y=2
+
+$.add(obj { OBJ_ID: 8, X: 854*G+OX, Y: GY+G })    // Spike devant le bloc
+
+$.add(obj { OBJ_ID: 1, X: 856*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 1, X: 856*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 1, X: 857*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 1, X: 857*G+OX, Y: GY+2*G })
+
+$.add(obj { OBJ_ID: 8, X: 859*G+OX, Y: GY+G })    // Spike
+
+// Triplet escalier montant (blocs 860-872)
+for j in 0..3 {
+    let bx = 860 + j*4
+    $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+G })
+    $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+2*G })
+    $.add(obj { OBJ_ID: 1, X: (bx+1)*G+OX, Y: GY+G })
+    $.add(obj { OBJ_ID: 1, X: (bx+1)*G+OX, Y: GY+2*G })
+    $.add(obj { OBJ_ID: 8, X: (bx+3)*G+OX, Y: GY+G })  // Spike avant chaque groupe
+}
+
+// Orbe rouge (saut court forcé) bloc 873
+$.add(obj { OBJ_ID: 84, X: 873*G+OX, Y: GY+G })  // Orbe rouge
+
+// Corridor final bloc 876-900 : spikes croisés
+$.add(obj { OBJ_ID: 8, X: 877*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 877*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 881*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 885*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 889*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 893*G+OX, Y: GY+3*G })
+
+// Orbe bleu (inversion de saut) bloc 896
+$.add(obj { OBJ_ID: 84, X: 896*G+OX, Y: GY+3*G })  // Orbe bleu = OBJ_ID 84 côté plafond
+// Note: Orbe bleu réel = OBJ_ID 84, mais vérifier la couleur
+
+
+// ============================================================
+// PHASE F3 : Faux sol + Orbe dans le vide (blocs 900-930)
+// Signature Bloodbath : trap avec alpha trigger sur sol
+// ============================================================
+
+// Déclencheur alpha : cache le sol réel à bloc 905 (groupe 20)
+$.add(obj {
+    OBJ_ID: 1007,  // Alpha trigger
+    X: 900*G+OX, Y: GY+G,
+    TARGET: 20g,
+    ALPHA: 0,
+    DURATION: 0
+})
+
+// Faux sol (groupe 20) : blocs 905-915 cachés
+for i in 905..915 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY, GROUPS: 20g })
+}
+
+// Orbe jaune dans le vide (nécessite saut alors que le sol semble absent)
+$.add(obj { OBJ_ID: 36, X: 910*G+OX, Y: GY+G })  // Orbe jaune flottant
+
+// Spike piège : visible sur le "sol" qui n'est plus là
+$.add(obj { OBJ_ID: 8, X: 912*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 916*G+OX, Y: GY+G })
+
+// Réapparition sol (alpha 1)
+$.add(obj {
+    OBJ_ID: 1007,
+    X: 918*G+OX, Y: GY+G,
+    TARGET: 20g,
+    ALPHA: 1,
+    DURATION: 0
+})
+
+// Spike de conclusion avant portail Robot
+$.add(obj { OBJ_ID: 8, X: 922*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 922*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 926*G+OX, Y: GY+G   })
+
+
+// ─── PORTAIL ROBOT (bloc 930) ────────────────────────────────
+$.add(obj { OBJ_ID: 660, X: 930*G+OX, Y: GY+2*G })  // Robot portal — vérifier OBJ_ID
+// Note: Robot portal OBJ_ID à confirmer (peut être différent de Wave 660)
+
+
+// ============================================================
+// PHASE G1 : Robot x2 — Calibration (blocs 930-980, beats 0-12)
+// Robot = sauts à durée variable, rythme musicalisé
+// v0 court = CUBE_V0*0.5 = 525 u/s → H≈1.3bl (29ms hold)
+// v0 long  = CUBE_V0     = 1050 u/s → H≈4.4bl (full hold)
+// ============================================================
+
+// Plafond Robot G1 : Y=6 puis descend
+for i in 930..960 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+6*G })
+}
+for i in 960..980 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G })
+}
+
+// G1 Rythme robot : saut court (tap) / long (hold)
+// Beat 1-2 : 2 blocs séparés (saut court par-dessus)
+$.add(obj { OBJ_ID: 1, X: 934*G+OX, Y: GY+G })  // Bloc plateforme
+$.add(obj { OBJ_ID: 8, X: 935*G+OX, Y: GY+2*G })  // Spike dessus
+$.add(obj { OBJ_ID: 1, X: 938*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 939*G+OX, Y: GY+2*G })
+
+// Beat 3-4 : bloc haut (saut long forcé)
+$.add(obj { OBJ_ID: 1, X: 942*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 1, X: 942*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 1, X: 942*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 944*G+OX, Y: GY+G })    // Spike sol après le bloc
+$.add(obj { OBJ_ID: 8, X: 945*G+OX, Y: GY+G })
+
+// Beat 5-8 : escalier 2 marches + spike
+$.add(obj { OBJ_ID: 1, X: 946*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 948*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 1, X: 950*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 1, X: 950*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 8, X: 952*G+OX, Y: GY+G })
+
+// Orbe jaune (saut précis via orbe) beat 8
+$.add(obj { OBJ_ID: 36, X: 953*G+OX, Y: GY+G })
+
+$.add(obj { OBJ_ID: 8, X: 956*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 956*G+OX, Y: GY+4*G })
+$.add(obj { OBJ_ID: 8, X: 960*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 964*G+OX, Y: GY+4*G })
+
+
+// ============================================================
+// PHASE G2 : Robot x2 — Séquence boss (blocs 980-1050)
+// Pattern complexe : saut court + long alternés, blocs obstacles
+// Plateforme flottante à Y=3, passage inférieur Y=0-2
+// ============================================================
+
+// Plafond serré Y=4
+for i in 980..1050 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+4*G })
+}
+
+// Plateforme flottante milieu (groupe 21 pour trigger possible)
+for j in 0..4 {
+    let bx = 982 + j*16
+    // Bloc flottant Y=2 (atterrissage après saut long)
+    $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+2*G })
+    $.add(obj { OBJ_ID: 1, X: (bx+1)*G+OX, Y: GY+2*G })
+    // Spike dessus (forcer atterrissage précis)
+    $.add(obj { OBJ_ID: 8, X: (bx+2)*G+OX, Y: GY+3*G })
+    // Spike sol après plateforme
+    $.add(obj { OBJ_ID: 8, X: (bx+3)*G+OX, Y: GY+G })
+    // Bloc bas (passage serré)
+    $.add(obj { OBJ_ID: 1, X: (bx+4)*G+OX, Y: GY+G })
+    $.add(obj { OBJ_ID: 1, X: (bx+4)*G+OX, Y: GY+2*G })
+    $.add(obj { OBJ_ID: 8, X: (bx+6)*G+OX, Y: GY+G })
+    // Spike haut plafond (passer courbé)
+    $.add(obj { OBJ_ID: 8, X: (bx+8)*G+OX, Y: GY+3*G })
+    $.add(obj { OBJ_ID: 8, X: (bx+12)*G+OX, Y: GY+G })
+}
+// G2 se termine à 982 + 4*16 = 1046
+
+// Triplet final avant transition (beats 17-19)
+$.add(obj { OBJ_ID: 8, X: 1042*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1042*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 1046*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 1046*G+OX, Y: GY+3*G })
+
+// Orbe rouge (saut court avant portail)
+$.add(obj { OBJ_ID: 84, X: 1048*G+OX, Y: GY+G })
+
+// ─── PORTAIL SHIP + Speed x3 (début Section 5) ───────────────
+$.add(obj { OBJ_ID: 13,  X: 1050*G+OX, Y: GY+2*G })  // Ship portal
+$.add(obj { OBJ_ID: 203, X: 1050*G+OX, Y: GY+2*G })  // Speed x3
+
+// ============================================================
+// FIN SECTION 4 — Section 5 : ECLIPSE (Ship+Wave x3) à X=1050
+// ============================================================
