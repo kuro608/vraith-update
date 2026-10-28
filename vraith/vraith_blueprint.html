@@ -1,586 +1,345 @@
+<title>VRAITH Blueprint</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<title>Vraith — Blueprint S1</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Share+Tech+Mono&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@500;700&display=swap">
 <style>
-  :root {
-    --bg: #0a0a0f;
-    --panel: #12121a;
-    --grid: #1e1e2e;
-    --grid-beat: #2a2a3e;
-    --grid-measure: #3a3a5e;
-    --fg: #c8c8e0;
-    --fg-dim: #6060a0;
-    --accent: #c8a200;
-    --block: #3a3060;
-    --block-border: #6050c0;
-    --spike: #ff3344;
-    --orb-yellow: #ffd700;
-    --orb-green: #44ff88;
-    --orb-red: #ff6622;
-    --orb-blue: #44aaff;
-    --portal-ship: #cc44ff;
-    --portal-speed: #ffffff;
-    --zone-1: rgba(100,80,200,0.07);
-    --zone-2: rgba(200,100,50,0.07);
-    --zone-3: rgba(50,200,150,0.07);
-    --ceiling: #3a3060;
-    --fakefloor: rgba(255,80,80,0.2);
-    --label-a: #a0a0ff;
-    --label-b: #ffaa44;
-    --label-c: #ff6688;
-    color-scheme: dark;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg);
-    color: var(--fg);
-    font-family: 'Rajdhani', sans-serif;
-    overflow-x: hidden;
-    padding-block: env(safe-area-inset-top, 0px) env(safe-area-inset-bottom, 0px);
-    padding-left: max(16px, env(safe-area-inset-left, 0px));
-    padding-right: max(16px, env(safe-area-inset-right, 0px));
-  }
-
-  header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 0 12px;
-    border-bottom: 1px solid var(--grid-beat);
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .title-block { display: flex; flex-direction: column; gap: 2px; }
-  h1 { font-size: 1.6rem; font-weight: 700; color: var(--accent); letter-spacing: 0.08em; text-transform: uppercase; }
-  .subtitle { font-size: 0.8rem; color: var(--fg-dim); font-family: 'Share Tech Mono', monospace; letter-spacing: 0.05em; }
-
-  .controls {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    flex-wrap: wrap;
-  }
-
-  .ctrl-group { display: flex; align-items: center; gap: 8px; }
-  .ctrl-label { font-size: 0.72rem; color: var(--fg-dim); letter-spacing: 0.06em; text-transform: uppercase; }
-
-  input[type=range] {
-    -webkit-appearance: none;
-    width: 90px;
-    height: 4px;
-    background: var(--grid-measure);
-    border-radius: 2px;
-    outline: none;
-  }
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 14px; height: 14px;
-    background: var(--accent);
-    border-radius: 50%;
-    cursor: pointer;
-  }
-
-  .zoom-val { font-family: 'Share Tech Mono', monospace; font-size: 0.78rem; color: var(--accent); width: 36px; }
-
-  .legend {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--grid-beat);
-  }
-  .leg-item { display: flex; align-items: center; gap: 6px; font-size: 0.72rem; color: var(--fg-dim); }
-  .leg-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
-  .leg-sq  { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
-  .leg-tri { width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; border-bottom: 12px solid var(--spike); }
-
-  .canvas-wrap {
-    overflow-x: auto;
-    overflow-y: hidden;
-    position: relative;
-    margin-top: 14px;
-    border: 1px solid var(--grid-beat);
-    border-radius: 6px;
-    background: var(--panel);
-    cursor: grab;
-    user-select: none;
-  }
-  .canvas-wrap:active { cursor: grabbing; }
-
-  canvas { display: block; }
-
-  .info-bar {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    padding: 10px 0 4px;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.72rem;
-    color: var(--fg-dim);
-  }
-  .info-item { display: flex; gap: 6px; }
-  .info-val { color: var(--fg); }
-
-  .sections-row {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-top: 14px;
-  }
-  .section-card {
-    border-radius: 6px;
-    border: 1px solid var(--grid-measure);
-    padding: 10px 14px;
-    flex: 1;
-    min-width: 160px;
-    background: var(--panel);
-  }
-  .section-card h3 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
-  .section-card ul { list-style: none; font-size: 0.75rem; color: var(--fg-dim); font-family: 'Share Tech Mono', monospace; line-height: 1.8; }
-  .section-card ul li span { color: var(--fg); }
-  .ca { border-color: var(--label-a); }
-  .ca h3 { color: var(--label-a); }
-  .cb { border-color: var(--label-b); }
-  .cb h3 { color: var(--label-b); }
-  .cc { border-color: var(--label-c); }
-  .cc h3 { color: var(--label-c); }
+:root{--bg:#09090c;--bg2:#12121a;--border:#222230;--gold:#c8a200;--red:#8b0000;--fg:#e0dcd0;--fg2:#8a8678;color-scheme:dark;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--fg);font-family:'Share Tech Mono',monospace;font-size:13px;
+  padding-left:max(12px,env(safe-area-inset-left,0px));
+  padding-right:max(12px,env(safe-area-inset-right,0px));
+  padding-block:12px;}
+h1{font-family:'Rajdhani',sans-serif;font-size:1.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);}
+.sub{color:var(--fg2);font-size:.75rem;margin-bottom:10px;}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.toolbar label{color:var(--fg2);font-size:.75rem;}
+.toolbar input[type=range]{width:100px;accent-color:var(--gold);}
+.toolbar button{background:var(--bg2);border:1px solid var(--border);color:var(--fg);padding:4px 10px;cursor:pointer;font-family:inherit;font-size:.75rem;}
+.toolbar button:hover{border-color:var(--gold);}
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:8px;font-size:.72rem;color:var(--fg2);}
+.li{display:flex;align-items:center;gap:5px;}
+.dot{width:10px;height:10px;flex-shrink:0;}
+.sec-tabs{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap;}
+.sec-tab{background:var(--bg2);border:1px solid var(--border);color:var(--fg2);padding:4px 12px;cursor:pointer;font-family:inherit;font-size:.75rem;}
+.sec-tab.on{background:var(--red);border-color:var(--gold);color:var(--gold);}
+#canvasWrap{overflow:hidden;border:1px solid var(--border);background:var(--bg2);cursor:crosshair;width:100%;height:400px;position:relative;}
+canvas{display:block;}
+#info{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.85);border:1px solid var(--border);padding:6px 10px;font-size:.72rem;color:var(--fg2);pointer-events:none;}
+#info span{color:var(--fg);}
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px;margin-top:10px;}
+.stat{background:var(--bg2);border:1px solid var(--border);border-left:2px solid var(--red);padding:6px 10px;}
+.stat-v{font-size:1.1rem;color:var(--gold);}
+.stat-l{font-size:.7rem;color:var(--fg2);}
 </style>
 
-<header>
-  <div class="title-block">
-    <h1>VRAITH</h1>
-    <div class="subtitle">Section 1 — AWAKENING · 200 BPM · Cube ×1→×2→Ship ×3</div>
-  </div>
-  <div class="controls">
-    <div class="ctrl-group">
-      <span class="ctrl-label">Zoom</span>
-      <input type="range" id="zoom" min="14" max="40" value="24" step="1">
-      <span class="zoom-val" id="zoomVal">24px</span>
-    </div>
-  </div>
-</header>
+<h1>VRAITH</h1>
+<div class="sub">Blueprint interactif — S1+S2+S3 | 240 TPS · BPM 200 · Extreme Demon | Drag pour scroller · Scroll pour zoomer</div>
+
+<div class="sec-tabs" id="secTabs"></div>
+
+<div class="toolbar">
+  <label>Zoom</label>
+  <input type="range" id="zoomSlider" min="8" max="40" value="18" oninput="setZoom(+this.value)">
+  <span id="zoomVal">18px/bl</span>
+  <button onclick="resetView()">Reset vue</button>
+  <button onclick="toggleGrid()">Grille beats</button>
+</div>
 
 <div class="legend">
-  <div class="leg-item"><div class="leg-sq" style="background:var(--block);border:1px solid var(--block-border)"></div> Bloc solide</div>
-  <div class="leg-item"><div class="leg-tri"></div> Spike</div>
-  <div class="leg-item"><div class="leg-dot" style="background:var(--orb-yellow);box-shadow:0 0 6px var(--orb-yellow)"></div> Orbe Jaune</div>
-  <div class="leg-item"><div class="leg-dot" style="background:var(--orb-green);box-shadow:0 0 6px var(--orb-green)"></div> Orbe Vert</div>
-  <div class="leg-item"><div class="leg-dot" style="background:var(--orb-red);box-shadow:0 0 6px var(--orb-red)"></div> Orbe Rouge</div>
-  <div class="leg-item"><div class="leg-sq" style="background:var(--portal-ship);width:8px;height:14px;border-radius:2px"></div> Portail Ship</div>
-  <div class="leg-item"><div class="leg-sq" style="background:rgba(255,80,80,0.3);border:1px dashed var(--spike)"></div> Faux sol ⚠️</div>
-  <div class="leg-item" style="margin-left:auto"><div class="leg-sq" style="background:rgba(100,80,200,0.3);width:20px"></div> ×1 &nbsp;<div class="leg-sq" style="background:rgba(200,100,50,0.3);width:20px"></div> ×2 &nbsp;<div class="leg-sq" style="background:rgba(50,200,150,0.3);width:20px"></div> ×3</div>
+  <div class="li"><div class="dot" style="background:#33334a"></div>Bloc</div>
+  <div class="li"><div class="dot" style="background:#cc2200"></div>Spike</div>
+  <div class="li"><div class="dot" style="background:#ffcc00"></div>Orbe J</div>
+  <div class="li"><div class="dot" style="background:#ff4400"></div>Orbe R</div>
+  <div class="li"><div class="dot" style="background:#00cc44"></div>Orbe V</div>
+  <div class="li"><div class="dot" style="background:#8800ff"></div>Portail</div>
+  <div class="li"><div class="dot" style="background:rgba(255,50,50,.4)"></div>Faux sol</div>
+  <div class="li"><div class="dot" style="background:rgba(0,200,255,.15)"></div>Zone x2</div>
+  <div class="li"><div class="dot" style="background:rgba(255,100,0,.15)"></div>Zone x3</div>
 </div>
 
-<div class="canvas-wrap" id="wrap">
-  <canvas id="c"></canvas>
+<div id="canvasWrap">
+  <canvas id="cv"></canvas>
+  <div id="info">Bloc: <span id="iBloc">—</span> | Beat: <span id="iBeat">—</span> | Y: <span id="iY">—</span></div>
 </div>
-
-<div class="info-bar">
-  <div class="info-item">Blocs total: <span class="info-val">270</span></div>
-  <div class="info-item">Durée: <span class="info-val">~40s</span></div>
-  <div class="info-item">Beats: <span class="info-val">133</span></div>
-  <div class="info-item">1 beat: <span class="info-val">3 blocs (×1) / 4 blocs (×2)</span></div>
-</div>
-
-<div class="sections-row">
-  <div class="section-card ca">
-    <h3>Bloc A — ×1</h3>
-    <ul>
-      <li>Blocs: <span>0 → 104</span></li>
-      <li>Mode: <span>Cube ×1</span></li>
-      <li>Diff: <span>★★★☆☆</span></li>
-      <li>Key: <span>Orbes verts enchaînés</span></li>
-      <li>Cible: <span>~50% de réussite</span></li>
-    </ul>
-  </div>
-  <div class="section-card cb">
-    <h3>Bloc B — ×2</h3>
-    <ul>
-      <li>Blocs: <span>105 → 209</span></li>
-      <li>Mode: <span>Cube ×2</span></li>
-      <li>Diff: <span>★★★★☆</span></li>
-      <li>Key: <span>Staircase + faux sol</span></li>
-      <li>Cible: <span>~30% de réussite</span></li>
-    </ul>
-  </div>
-  <div class="section-card cc">
-    <h3>Bloc C — ×2→×3</h3>
-    <ul>
-      <li>Blocs: <span>210 → 270</span></li>
-      <li>Mode: <span>Cube→Ship ×3</span></li>
-      <li>Diff: <span>★★★★★</span></li>
-      <li>Key: <span>Triple spike + passage serré</span></li>
-      <li>Cible: <span>transition Section 2</span></li>
-    </ul>
-  </div>
-</div>
+<div class="stats" id="stats"></div>
 
 <script>
-const canvas = document.getElementById('c');
-const ctx = canvas.getContext('2d');
-const wrap = document.getElementById('wrap');
-const zoomSlider = document.getElementById('zoom');
-const zoomVal = document.getElementById('zoomVal');
+const VX={x1:10.386,x2:12.914,x3:15.600};
+const BEAT=0.3;
+const SECTIONS=[
+  {id:'s1',name:'AWAKENING',color:'#c8a200',startBloc:0,  endBloc:270, mode:'Cube',speed:'x1'},
+  {id:'s2',name:'DESCENT',  color:'#8800ff',startBloc:258,endBloc:540, mode:'Ship',speed:'x3'},
+  {id:'s3',name:'CORRUPTION',color:'#00aacc',startBloc:537,endBloc:810,mode:'Wave',speed:'x2'},
+];
+const SPEED_ZONES=[
+  {xS:0,  xE:105,c:'rgba(255,255,255,0.03)'},
+  {xS:105,xE:258,c:'rgba(0,200,255,0.06)'},
+  {xS:258,xE:537,c:'rgba(255,100,0,0.09)'},
+  {xS:537,xE:690,c:'rgba(0,200,255,0.06)'},
+  {xS:690,xE:810,c:'rgba(255,100,0,0.09)'},
+];
 
-let G = 24; // px per block
-const ROWS = 13; // rows visible
-const TOTAL_X = 272;
+const OBJ=[];
+function add(type,bx,by,g){OBJ.push({type,bx:+bx,by:+by,g:g||0});}
 
-// ---- OBJECTS ----
-const blocks = [];
-const spikes = [];
-const orbs = [];
-const portals = [];
-const ceilings = [];
-const fakeSol = [];
+// ── Section 1 ─────────────────────────────────────────────
+for(let i=0;i<=270;i++) add('block',i,0);
+for(let i=4;i<29;i++) add('block',i,4);
+add('spike',5,1);add('spike',9,1);add('orb_y',12,2);
+add('spike',15,3);add('spike',18,1);
+add('spike',21,1);add('spike',21,3);
+add('orb_g',24,2);add('spike',27,1);
+for(let c=30;c<36;c++){add('block',c,1);add('block',c,2);}
+add('spike',33,3);
+for(let i=30;i<37;i++) add('block',i,4);
+add('orb_y',37,4);
+for(let i=37;i<45;i++) add('block',i,5);
+add('spike',40,2);add('spike',43,2);
+add('orb_r',48,2);
+for(let i=49;i<55;i++) add('block',i,3);
+add('spike',51,1);add('spike',54,2);
+add('spike',60,1);add('spike',63,1);add('spike',66,1);
+add('orb_y',69,2);
+for(let i=70;i<76;i++) add('block',i,5);
+add('spike',72,1);add('spike',72,4);
+for(let i=78;i<84;i++) add('block',i,0,12);
+add('orb_y',81,1);add('alpha',76,1,12);
+add('orb_y',90,4);add('orb_y',93,1);
+add('spike',96,4);add('spike',99,1);add('orb_r',102,2);
+add('portal_x2',105,1);
+for(let i=106;i<115;i++) add('block',i,6);
+add('spike',109,1);add('spike',113,1);
+add('orb_y',117,4);add('orb_y',119,1);
+for(let i=121;i<134;i++) add('block',i,4);
+add('spike',121,3);add('spike',125,1);add('spike',129,3);
+for(let r=0;r<3;r++) add('block',133,r);add('spike',133,3);
+for(let r=0;r<4;r++) add('block',137,r);add('spike',137,4);
+for(let r=0;r<5;r++) add('block',141,r);add('spike',141,5);
+for(let i=141;i<150;i++) add('block',i,6);
+add('orb_g',145,3);add('orb_g',149,5);
+for(let i=153;i<163;i++) add('block',i,0,13);
+add('alpha',149,1,13);
+add('orb_y',157,1);add('orb_y',161,3);
+add('orb_r',165,2);add('spike',169,1);
+for(let i=173;i<191;i++) add('block',i,3);
+add('spike',173,1);add('spike',177,1);add('spike',181,2);add('spike',185,1);
+add('orb_y',190,2);add('orb_r',194,3);add('orb_y',198,1);
+add('spike',202,1);add('spike',205,2);
+add('spike',210,1);add('spike',214,1);add('spike',218,2);
+add('orb_r',222,2);add('orb_y',226,5);
+for(let i=230;i<238;i++) add('block',i,3);
+add('spike',232,2);add('spike',236,1);
+add('orb_y',248,1);
+add('portal_ship',258,1);add('portal_x3',258,1);
 
-// Helper
-function ground(x1, x2) {
-  for (let x = x1; x <= x2; x++) blocks.push({x, y:0});
+// ── Section 2 ─────────────────────────────────────────────
+for(let i=258;i<=540;i++) add('block',i,0);
+for(let i=258;i<278;i++) add('block',i,7);
+for(let i=278;i<288;i++) add('block',i,6);
+for(let i=288;i<298;i++) add('block',i,5);
+add('spike',263,1);add('spike',268,1);
+add('spike',273,6);add('spike',278,5);
+add('spike',283,1);add('spike',283,4);
+for(let i=298;i<370;i++) add('block',i,4);
+[300,310,320].forEach(x=>add('spike',x,1));
+[305,315,325].forEach(x=>add('spike',x,3));
+add('grav_i',328,2);
+[333,343].forEach(x=>add('spike',x,3));
+[338,348].forEach(x=>add('spike',x,1));
+add('grav_n',353,2);
+add('spike',358,1);add('spike',363,3);
+for(let i=370;i<450;i++) add('block',i,3);
+add('spike',372,1);add('spike',375,2);add('spike',378,1);add('spike',383,2);
+add('portal_mini',388,2);
+for(let i=388;i<415;i++) add('block',i,2);
+for(let k=0;k<5;k++) add('spike',391+k*5,1);
+add('portal_norm',415,2);
+for(let i=415;i<430;i++) add('block',i,3);
+for(let i=430;i<450;i++) add('block',i,4);
+[420,430,435,440].forEach((x,k)=>add('spike',x,k%2===0?1:3));
+for(let i=450;i<510;i++) add('block',i,2);
+add('grav_i',455,1);add('spike',458,1);add('spike',463,1);add('spike',468,1);
+add('grav_n',473,1);add('spike',476,1);add('spike',481,1);
+add('grav_i',486,1);add('spike',489,1);add('spike',494,1);
+add('grav_n',499,1);
+for(let i=510;i<530;i++) add('block',i,5);
+for(let i=530;i<541;i++) add('block',i,7);
+add('spike',515,1);add('spike',520,4);add('spike',525,1);add('spike',530,4);
+add('portal_wave',537,3);add('portal_x2',537,3);
+
+// ── Section 3 ─────────────────────────────────────────────
+[[537,542,5],[541,546,4],[545,550,5],[549,554,3],[553,557,5],[557,561,3],
+ [561,565,5],[565,569,3],[569,573,5],[573,577,3]].forEach(([a,b,h])=>{
+  for(let i=a;i<b;i++) add('block',i,h);
+});
+add('spike',555,1);add('spike',559,2);add('spike',562,1);add('spike',567,2);
+add('spike',570,1);add('spike',575,2);
+for(let i=577;i<581;i++) add('block',i,3);add('spike',578,1);
+for(let i=581;i<585;i++) add('block',i,2);add('spike',583,1);
+for(let c=0;c<6;c++){
+  let b=585+c*8;
+  for(let i=b;i<b+4;i++) add('block',i,4);add('spike',b+1,1);
+  for(let i=b+4;i<b+8;i++) add('block',i,2);add('spike',b+5,1);
 }
-function solidCol(x, y1, y2) {
-  for (let y = y1; y <= y2; y++) blocks.push({x, y});
-}
+for(let i=633;i<637;i++) add('block',i,5);
+for(let i=637;i<660;i++) add('block',i,5);
+[[637,2],[637,3],[639,3],[639,4],[641,2],[641,3]].forEach(([x,y])=>add('block',x,y));
+for(let j=0;j<6;j++){let bx=643+j*8;[[0,2],[0,3],[2,3],[2,4],[4,2],[4,3]].forEach(([dx,y])=>add('block',bx+dx,y));}
+add('portal_x3',690,3);
+for(let i=690;i<730;i++) add('block',i,2);
+for(let k=0;k<5;k++) add('spike',693+k*5,1);
+for(let i=730;i<740;i++) add('block',i,5);
+add('spike',731,1);add('spike',731,4);add('spike',735,1);add('spike',735,4);
+add('portal_mini',740,1);
+for(let i=740;i<780;i++) add('block',i,2);
+for(let k=0;k<10;k++) add('spike',742+k*4,1);
+add('portal_norm',780,1);
+for(let i=780;i<810;i++) add('block',i,4);
+add('spike',783,1);add('spike',788,3);add('spike',793,1);add('spike',798,3);add('spike',803,1);
+add('portal_cube',808,2);add('portal_x2',808,2);
 
-// === BLOC A ===
-ground(0, 14);
-spikes.push({x:15, y:1});
-ground(16, 20);
-spikes.push({x:21, y:1});
-ground(22, 26);
-orbs.push({x:27, y:1, type:'yellow', label:'J'});
-// Ceiling X=28-36 at Y=3
-for (let x=28;x<=36;x++) ceilings.push({x, y:3});
-ground(28, 38);
-// raised ground X=39-44
-for (let x=39;x<=44;x++) { solidCol(x, 0, 2); }
-spikes.push({x:45, y:3});
-spikes.push({x:48, y:3});
-ground(45, 53);
-ground(48, 53);
-orbs.push({x:54, y:2, type:'green', label:'N'});
-orbs.push({x:57, y:4, type:'green', label:'H'});
-spikes.push({x:63, y:5});
-ground(64, 104);
+// ── Renderer ──────────────────────────────────────────────
+const wrap=document.getElementById('canvasWrap');
+const cv=document.getElementById('cv');
+const ctx=cv.getContext('2d');
+let px=18,camX=0,showGrid=true,curSec=0;
+const COLS={block:'#33334a',spike:'#cc2200',orb_y:'#ffcc00',orb_r:'#ff4400',
+  orb_g:'#00cc44',orb_b:'#00aaff',portal_ship:'#8800ff',portal_wave:'#00aaff',
+  portal_cube:'#ffaa00',portal_x2:'rgba(0,200,255,.7)',portal_x3:'rgba(255,100,0,.7)',
+  portal_mini:'#aaaaaa',portal_norm:'#aaaaaa',alpha:'rgba(255,50,50,.5)',
+  grav_i:'#ff00aa',grav_n:'#00ffaa'};
 
-// === PORTAIL x2 ===
-portals.push({x:105, type:'speed2', label:'×2'});
-
-// === BLOC B ===
-ground(105, 210);
-spikes.push({x:109, y:1});
-spikes.push({x:113, y:1});
-orbs.push({x:117, y:3, type:'yellow', label:'J'});
-orbs.push({x:118, y:1, type:'yellow', label:'J'});
-spikes.push({x:121, y:4});
-spikes.push({x:125, y:1});
-spikes.push({x:129, y:4});
-// Staircase X=133
-solidCol(133, 0, 3); spikes.push({x:133, y:4});
-solidCol(137, 0, 4); spikes.push({x:137, y:5});
-solidCol(141, 0, 5); spikes.push({x:141, y:6});
-// Alpha trigger marker at X=149
-portals.push({x:149, type:'alpha', label:'α'});
-// Fake floor X=153-157
-for (let x=153;x<=157;x++) fakeSol.push({x, y:0});
-orbs.push({x:157, y:1, type:'yellow', label:'J'});
-orbs.push({x:165, y:2, type:'red', label:'R'});
-orbs.push({x:169, y:5, type:'yellow', label:'J'});
-
-// === BLOC C ===
-ground(211, 257);
-spikes.push({x:210, y:1});
-spikes.push({x:214, y:1});
-spikes.push({x:218, y:1});
-orbs.push({x:222, y:2, type:'red', label:'R'});
-orbs.push({x:226, y:5, type:'yellow', label:'J'});
-// Ceiling X=230-237 at Y=3
-for (let x=230;x<=237;x++) ceilings.push({x, y:3});
-orbs.push({x:250, y:1, type:'yellow', label:'J'});
-
-// Ship portal + speed x3
-portals.push({x:258, type:'ship', label:'SHIP'});
-portals.push({x:260, type:'speed3', label:'×3'});
-
-// ---- COLORS (CSS vars read at runtime) ----
-const style = getComputedStyle(document.documentElement);
-const C = {
-  bg:       '#0a0a0f',
-  panel:    '#12121a',
-  grid:     '#1e1e2e',
-  gridBeat: '#2a2a3e',
-  gridMeas: '#3a3a5e',
-  fg:       '#c8c8e0',
-  fgDim:    '#6060a0',
-  accent:   '#c8a200',
-  block:    '#3a3060',
-  blockB:   '#6050c0',
-  spike:    '#ff3344',
-  orbY:     '#ffd700',
-  orbG:     '#44ff88',
-  orbR:     '#ff6622',
-  ship:     '#cc44ff',
-  alpha:    '#ff8844',
-  ceil:     '#2a2050',
-  ceilB:    '#5040a0',
-  fake:     'rgba(255,60,60,0.25)',
-  fakeB:    '#ff3344',
-  zone1:    'rgba(100,80,200,0.07)',
-  zone2:    'rgba(200,100,50,0.07)',
-  zone3:    'rgba(50,200,150,0.07)',
-};
-
-function draw() {
-  const W = TOTAL_X * G;
-  const H = (ROWS + 3) * G;
-  canvas.width = W;
-  canvas.height = H;
-
-  const TOP = G * 1.5; // top margin for labels
-  const GY = H - G * 1.5; // y=0 ground in px (from top)
-
-  function px(bx, by) {
-    return { x: bx * G, y: GY - by * G };
-  }
-
-  // BG
-  ctx.fillStyle = C.bg;
-  ctx.fillRect(0, 0, W, H);
-
-  // Speed zones
-  ctx.fillStyle = C.zone1;
-  ctx.fillRect(0, 0, 105*G, H);
-  ctx.fillStyle = C.zone2;
-  ctx.fillRect(105*G, 0, 153*G, H);
-  ctx.fillStyle = C.zone3;
-  ctx.fillRect(258*G, 0, 14*G, H);
-
-  // Grid
-  for (let x = 0; x <= TOTAL_X; x++) {
-    const isMeasure = x % 12 === 0;
-    const isBeat = x % 3 === 0;
-    ctx.strokeStyle = isMeasure ? C.gridMeas : isBeat ? C.gridBeat : C.grid;
-    ctx.lineWidth = isMeasure ? 1 : 0.5;
-    ctx.beginPath();
-    ctx.moveTo(x*G, 0);
-    ctx.lineTo(x*G, H);
-    ctx.stroke();
-  }
-  for (let y = 0; y <= ROWS; y++) {
-    const py = GY - y * G;
-    ctx.strokeStyle = y === 0 ? C.gridMeas : C.grid;
-    ctx.lineWidth = y === 0 ? 1.5 : 0.5;
-    ctx.beginPath();
-    ctx.moveTo(0, py);
-    ctx.lineTo(W, py);
-    ctx.stroke();
-  }
-
-  // Beat numbers along top
-  ctx.font = `${Math.max(7, G*0.38)}px 'Share Tech Mono', monospace`;
-  ctx.fillStyle = C.fgDim;
-  ctx.textAlign = 'center';
-  for (let b = 0; b * 3 <= TOTAL_X; b++) {
-    const bx = b * 3;
-    if (b % 4 === 0) {
-      ctx.fillText(`b${b+1}`, bx*G + G*1.5, TOP - 4);
-    }
-  }
-
-  // Block X positions along bottom
-  ctx.fillStyle = C.fgDim;
-  ctx.font = `${Math.max(7, G*0.35)}px 'Share Tech Mono', monospace`;
-  for (let x = 0; x <= TOTAL_X; x += 12) {
-    ctx.fillText(x, x*G + G*0.5, H - 4);
-  }
-
-  // Section labels
-  function sectionLabel(bx, label, color) {
-    const p = px(bx, ROWS + 0.8);
-    ctx.font = `bold ${Math.max(10, G*0.55)}px 'Rajdhani', sans-serif`;
-    ctx.fillStyle = color;
-    ctx.textAlign = 'left';
-    ctx.fillText(label, p.x + 4, TOP + G*0.4);
-  }
-  // Zone backgrounds for labels
-  const sections = [
-    {x1:0, x2:105, label:'BLOC A · ×1 · Cube', color:'#a0a0ff'},
-    {x1:105, x2:210, label:'BLOC B · ×2 · Cube', color:'#ffaa44'},
-    {x1:210, x2:270, label:'BLOC C · ×2→×3 · Ship', color:'#ff6688'},
-  ];
-  sections.forEach(s => {
-    ctx.font = `bold ${Math.max(9, G*0.5)}px 'Rajdhani', sans-serif`;
-    ctx.fillStyle = s.color + '99';
-    ctx.textAlign = 'left';
-    ctx.fillText(s.label, s.x1*G + 4, TOP - 4 + G*0.7);
-  });
-
-  // Fake floor (dashed, red tint)
-  fakeSol.forEach(({x, y}) => {
-    const p = px(x, y);
-    ctx.fillStyle = C.fake;
-    ctx.fillRect(p.x, p.y - G, G, G);
-    ctx.strokeStyle = C.fakeB;
-    ctx.lineWidth = 1;
-    ctx.setLineDash([3,3]);
-    ctx.strokeRect(p.x+0.5, p.y - G+0.5, G-1, G-1);
-    ctx.setLineDash([]);
-  });
-
-  // Ceiling blocks
-  ceilings.forEach(({x, y}) => {
-    const p = px(x, y);
-    ctx.fillStyle = C.ceil;
-    ctx.fillRect(p.x, p.y - G, G, G);
-    ctx.strokeStyle = C.ceilB;
-    ctx.lineWidth = 1;
-    ctx.strokeRect(p.x+0.5, p.y - G+0.5, G-1, G-1);
-    // hatch
-    ctx.strokeStyle = C.ceilB + '44';
-    ctx.lineWidth = 0.5;
-    for (let d = 0; d < G*2; d += 6) {
-      ctx.beginPath();
-      ctx.moveTo(p.x + d, p.y - G);
-      ctx.lineTo(p.x, p.y - G + d);
-      ctx.stroke();
-    }
-  });
-
-  // Blocks
-  blocks.forEach(({x, y}) => {
-    const p = px(x, y);
-    ctx.fillStyle = C.block;
-    ctx.fillRect(p.x, p.y - G, G, G);
-    ctx.strokeStyle = C.blockB;
-    ctx.lineWidth = 1;
-    ctx.strokeRect(p.x+0.5, p.y - G + 0.5, G-1, G-1);
-    // Inner highlight line
-    ctx.strokeStyle = C.blockB + '50';
-    ctx.lineWidth = 0.5;
-    ctx.strokeRect(p.x+2, p.y - G + 2, G-4, G-4);
-  });
-
-  // Spikes
-  spikes.forEach(({x, y}) => {
-    const p = px(x, y);
-    ctx.fillStyle = C.spike;
-    ctx.shadowColor = C.spike;
-    ctx.shadowBlur = G * 0.3;
-    ctx.beginPath();
-    ctx.moveTo(p.x + G*0.1, p.y);
-    ctx.lineTo(p.x + G*0.9, p.y);
-    ctx.lineTo(p.x + G*0.5, p.y - G*0.92);
-    ctx.closePath();
-    ctx.fill();
-    ctx.shadowBlur = 0;
-    // outline
-    ctx.strokeStyle = '#ff000088';
-    ctx.lineWidth = 0.8;
-    ctx.stroke();
-  });
-
-  // Orbs
-  orbs.forEach(({x, y, type, label}) => {
-    const p = px(x, y);
-    const cx2 = p.x + G*0.5;
-    const cy2 = p.y - G*0.5;
-    const r = G * 0.38;
-    const col = type === 'yellow' ? C.orbY : type === 'green' ? C.orbG : type === 'red' ? C.orbR : C.orbY;
-    ctx.shadowColor = col;
-    ctx.shadowBlur = G * 0.5;
-    ctx.fillStyle = col;
-    ctx.beginPath();
-    ctx.arc(cx2, cy2, r, 0, Math.PI*2);
-    ctx.fill();
-    ctx.shadowBlur = 0;
-    ctx.strokeStyle = '#ffffff44';
-    ctx.lineWidth = 1;
-    ctx.stroke();
-    // inner ring
-    ctx.strokeStyle = col + 'aa';
-    ctx.beginPath();
-    ctx.arc(cx2, cy2, r + 3, 0, Math.PI*2);
-    ctx.stroke();
-    // Label
-    ctx.fillStyle = '#000';
-    ctx.font = `bold ${Math.max(6, G*0.4)}px 'Share Tech Mono', monospace`;
-    ctx.textAlign = 'center';
-    ctx.fillText(label, cx2, cy2 + G*0.14);
-  });
-
-  // Portals
-  portals.forEach(({x, type, label}) => {
-    const p = px(x, 0);
-    let col = type === 'ship' ? C.ship : type === 'alpha' ? C.alpha : type === 'speed3' ? '#00ffcc' : C.accent;
-    ctx.fillStyle = col + '33';
-    ctx.strokeStyle = col;
-    ctx.lineWidth = 1.5;
-    ctx.setLineDash(type === 'alpha' ? [4,3] : []);
-    // Vertical line through full height
-    ctx.beginPath();
-    ctx.moveTo(x*G + G*0.5, TOP);
-    ctx.lineTo(x*G + G*0.5, p.y);
-    ctx.stroke();
-    ctx.setLineDash([]);
-    // Portal frame
-    const ph = G * 4;
-    const pw = G * 0.7;
-    ctx.fillRect(x*G + G*0.5 - pw/2, p.y - ph, pw, ph);
-    ctx.strokeRect(x*G + G*0.5 - pw/2, p.y - ph, pw, ph);
-    // Label
-    ctx.fillStyle = col;
-    ctx.font = `bold ${Math.max(8, G*0.45)}px 'Rajdhani', sans-serif`;
-    ctx.textAlign = 'center';
-    const lx = x*G + G*0.5;
-    const ly = p.y - ph - 4;
-    ctx.fillText(label, lx, ly);
-  });
-
-  // Ground line thick
-  ctx.strokeStyle = C.gridMeas;
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(0, GY);
-  ctx.lineTo(W, GY);
-  ctx.stroke();
-
-  // Beat tick marks on ground line
-  for (let b = 0; b * 3 <= TOTAL_X; b++) {
-    const bx = b * 3 * G;
-    ctx.strokeStyle = b % 4 === 0 ? C.gridMeas : C.gridBeat;
-    ctx.lineWidth = b % 4 === 0 ? 1.5 : 0.8;
-    ctx.beginPath();
-    ctx.moveTo(bx, GY);
-    ctx.lineTo(bx, GY + G*0.25);
-    ctx.stroke();
-  }
-}
-
-function resize() {
-  G = parseInt(zoomSlider.value);
-  zoomVal.textContent = G + 'px';
+function w2s(bx,by){return[bx*px-camX,cv.height-(by+1)*px];}
+function s2b(sx,sy){return[(sx+camX)/px,(cv.height-sy)/px-1];}
+function setZoom(v){px=v;document.getElementById('zoomVal').textContent=v+'px/bl';draw();}
+function toggleGrid(){showGrid=!showGrid;draw();}
+function resetView(){
+  const s=SECTIONS[curSec];
+  camX=Math.max(0,s.startBloc*px-20);
   draw();
 }
 
-zoomSlider.addEventListener('input', resize);
+function draw(){
+  const W=cv.width,H=cv.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#12121a';ctx.fillRect(0,0,W,H);
+  SPEED_ZONES.forEach(z=>{
+    const x1=z.xS*px-camX,x2=z.xE*px-camX;
+    if(x2<0||x1>W) return;
+    ctx.fillStyle=z.c;ctx.fillRect(Math.max(0,x1),0,Math.min(W,x2)-Math.max(0,x1),H);
+  });
+  if(showGrid){
+    const vx=VX[SECTIONS[curSec].speed]||VX.x1;
+    const bb=vx*BEAT;
+    let bs=Math.floor((camX/px)/bb)*bb;
+    for(let b=bs;b<(camX+W)/px+bb;b+=bb){
+      const sx=b*px-camX;if(sx<0||sx>W) continue;
+      ctx.strokeStyle='rgba(255,255,255,0.05)';ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(sx,0);ctx.lineTo(sx,H);ctx.stroke();
+    }
+  }
+  SECTIONS.forEach((s,idx)=>{
+    const sx=s.startBloc*px-camX;
+    if(sx>0&&sx<W){
+      ctx.strokeStyle=s.color+'88';ctx.lineWidth=1;ctx.setLineDash([4,4]);
+      ctx.beginPath();ctx.moveTo(sx,0);ctx.lineTo(sx,H);ctx.stroke();
+      ctx.setLineDash([]);ctx.fillStyle=s.color;
+      ctx.font='11px Rajdhani,sans-serif';
+      ctx.fillText('S'+(idx+1)+':'+s.name,sx+4,20);
+    }
+  });
+  OBJ.forEach(o=>{
+    const[sx,sy]=w2s(o.bx,o.by),p=px;
+    if(sx+p<0||sx>W||sy+p<0||sy>H) return;
+    const col=COLS[o.type]||'#888';
+    if(o.type==='block'){
+      ctx.fillStyle=o.g?'rgba(255,50,50,0.4)':'#33334a';
+      ctx.fillRect(sx,sy,p-1,p-1);
+      if(o.g){ctx.strokeStyle='#ff5555';ctx.lineWidth=1;ctx.setLineDash([2,2]);ctx.strokeRect(sx,sy,p-1,p-1);ctx.setLineDash([]);}
+    } else if(o.type==='spike'){
+      ctx.fillStyle=col;ctx.beginPath();
+      ctx.moveTo(sx,sy+p-1);ctx.lineTo(sx+p/2,sy);ctx.lineTo(sx+p-1,sy+p-1);
+      ctx.closePath();ctx.fill();
+    } else if(o.type.startsWith('orb_')){
+      const r=p*.38;ctx.beginPath();ctx.arc(sx+p/2,sy+p/2,r,0,Math.PI*2);
+      ctx.fillStyle=col+'33';ctx.fill();ctx.strokeStyle=col;ctx.lineWidth=2;ctx.stroke();
+    } else if(o.type.startsWith('portal_')){
+      ctx.fillStyle=col;ctx.fillRect(sx,sy,3,p);
+    } else if(o.type==='alpha'){
+      ctx.fillStyle='rgba(255,50,50,.3)';ctx.fillRect(sx,sy,p-1,p-1);
+      ctx.fillStyle='#ff5555';ctx.font=Math.max(7,p*.4)+'px monospace';ctx.fillText('α',sx+2,sy+p-3);
+    } else if(o.type.startsWith('grav_')){
+      ctx.strokeStyle=col;ctx.lineWidth=2;
+      ctx.beginPath();ctx.moveTo(sx,sy+p/2);ctx.lineTo(sx+p-1,sy+p/2);ctx.stroke();
+      ctx.fillStyle=col;ctx.font=Math.max(7,p*.4)+'px monospace';
+      ctx.fillText(o.type==='grav_i'?'↑':'↓',sx+2,sy+p-3);
+    }
+  });
+  ctx.strokeStyle='rgba(200,160,0,.4)';ctx.lineWidth=1;
+  const[,gy]=w2s(0,-0.05);ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.stroke();
+}
 
-// Drag to pan
-let dragging = false, startX = 0, scrollStart = 0;
-wrap.addEventListener('mousedown', e => { dragging = true; startX = e.clientX; scrollStart = wrap.scrollLeft; });
-window.addEventListener('mouseup', () => dragging = false);
-window.addEventListener('mousemove', e => {
-  if (!dragging) return;
-  wrap.scrollLeft = scrollStart - (e.clientX - startX);
+function renderStats(){
+  const s=SECTIONS[curSec];
+  const bl=s.endBloc-s.startBloc;
+  const vx=VX[s.speed]||VX.x1;
+  const sec=(bl/vx).toFixed(1);
+  const beats=(bl/vx/BEAT).toFixed(0);
+  const spk=OBJ.filter(o=>o.type==='spike'&&o.bx>=s.startBloc&&o.bx<=s.endBloc).length;
+  const orb=OBJ.filter(o=>o.type.startsWith('orb_')&&o.bx>=s.startBloc&&o.bx<=s.endBloc).length;
+  const prt=OBJ.filter(o=>o.type.startsWith('portal_')&&o.bx>=s.startBloc&&o.bx<=s.endBloc).length;
+  const flp=OBJ.filter(o=>(o.type==='grav_i'||o.type==='grav_n')&&o.bx>=s.startBloc&&o.bx<=s.endBloc).length;
+  document.getElementById('stats').innerHTML=`
+    <div class="stat"><div class="stat-v">${bl}</div><div class="stat-l">blocs</div></div>
+    <div class="stat"><div class="stat-v">${sec}s</div><div class="stat-l">durée</div></div>
+    <div class="stat"><div class="stat-v">${beats}</div><div class="stat-l">beats</div></div>
+    <div class="stat"><div class="stat-v">${spk}</div><div class="stat-l">spikes</div></div>
+    <div class="stat"><div class="stat-v">${orb}</div><div class="stat-l">orbes</div></div>
+    <div class="stat"><div class="stat-v">${prt}</div><div class="stat-l">portails</div></div>
+    <div class="stat"><div class="stat-v">${flp}</div><div class="stat-l">gravity flips</div></div>`;
+}
+
+const tabsEl=document.getElementById('secTabs');
+SECTIONS.forEach((s,idx)=>{
+  const b=document.createElement('button');
+  b.className='sec-tab'+(idx===0?' on':'');
+  b.textContent=`S${idx+1}: ${s.name} (${s.mode})`;
+  b.onclick=()=>{
+    curSec=idx;
+    document.querySelectorAll('.sec-tab').forEach((x,i)=>x.classList.toggle('on',i===idx));
+    resetView();renderStats();
+  };
+  tabsEl.appendChild(b);
 });
 
-// Touch
-wrap.addEventListener('touchstart', e => { startX = e.touches[0].clientX; scrollStart = wrap.scrollLeft; }, {passive:true});
-wrap.addEventListener('touchmove', e => {
-  wrap.scrollLeft = scrollStart - (e.touches[0].clientX - startX);
-}, {passive:true});
+let drag=false,lastMX=0;
+wrap.addEventListener('mousedown',e=>{drag=true;lastMX=e.clientX;});
+window.addEventListener('mouseup',()=>drag=false);
+window.addEventListener('mousemove',e=>{
+  if(drag){camX-=(e.clientX-lastMX);if(camX<-20)camX=-20;draw();}
+  lastMX=e.clientX;
+  const r=wrap.getBoundingClientRect();
+  const[bx,by]=s2b(e.clientX-r.left,e.clientY-r.top);
+  const s=SECTIONS[curSec];const vx=VX[s.speed]||VX.x1;
+  document.getElementById('iBloc').textContent=Math.floor(bx);
+  document.getElementById('iBeat').textContent=(Math.floor(bx)/vx/BEAT).toFixed(1);
+  document.getElementById('iY').textContent=Math.floor(by);
+});
+wrap.addEventListener('wheel',e=>{
+  e.preventDefault();
+  px=Math.max(8,Math.min(40,px+(e.deltaY>0?-1:1)));
+  document.getElementById('zoomSlider').value=px;
+  document.getElementById('zoomVal').textContent=px+'px/bl';
+  draw();
+},{passive:false});
+let t0=null;
+wrap.addEventListener('touchstart',e=>{t0=e.touches[0].clientX;});
+wrap.addEventListener('touchmove',e=>{
+  e.preventDefault();
+  camX-=e.touches[0].clientX-t0;if(camX<-20)camX=-20;
+  t0=e.touches[0].clientX;draw();
+},{passive:false});
 
-draw();
+new ResizeObserver(()=>{cv.width=wrap.clientWidth;cv.height=wrap.clientHeight;draw();}).observe(wrap);
+cv.width=wrap.clientWidth;cv.height=wrap.clientHeight;
+resetView();renderStats();
 </script>

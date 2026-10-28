@@ -1,0 +1,219 @@
+// ============================================================
+// VRAITH — Section 2 : DESCENT  (Ship x3)
+// ============================================================
+// BPM     : 200  |  Beat = 0.300s = 72 frames
+// Mode    : Ship x3 (blocs 258-540)
+// vX x3   : 15.600 b/s  |  1 beat = 4.680 bl ≈ 5 blocs
+// Ship    : vMax↑ = 8 b/s (240 u/s)  |  vMax↓ = 6.4 b/s (192 u/s)
+//           g = 3024 u/s²  |  t→vMax = 0.079s ≈ 0.26 beats
+// Couloir : min 2.0 bl (Extreme) — 1 frame d'erreur = 0.065 bl
+// Début   : X=258 (suite Section 1)
+// ============================================================
+
+let BEAT = 0.3
+let OX   = 195
+let GY   = 105
+let G    = 30
+
+// START_BLOC : offset pour cette section
+let S    = 258
+
+// Helpers locaux
+// 1 beat x3 = 4.680 blocs ≈ 5
+// Sol + Plafond = murs du couloir ship
+// Spikes sur mur = réduisent la marge de 1 bloc
+
+
+// ============================================================
+// COULEUR — transition rouge profond (début drop)
+// ============================================================
+// Déclenchée à l'entrée du portail ship (beat 75 global)
+$.add(obj {
+    OBJ_ID: 899,  // Color trigger
+    X: S*G+OX, Y: GY+2*G,
+    TARGET_COLOR: 1000g,
+    R: 15, G_VAL: 0, B: 20,
+    DURATION: 0.5
+})
+$.add(obj {
+    OBJ_ID: 899,
+    X: S*G+OX, Y: GY+2*G,
+    TARGET_COLOR: 1g,
+    R: 180, G_VAL: 40, B: 200,
+    DURATION: 0.5
+})
+
+
+// ============================================================
+// PHASE D1 : Intro ship (blocs 258–295, beats 0–8 @x3)
+// Couloir large (6 blocs), descend progressivement
+// ============================================================
+
+// Mur SOL (Y=0 déjà posé par section 1 — continuer)
+for i in 258..541 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY })
+}
+
+// Mur PLAFOND — commence à Y=7, descend progressivement
+for i in 258..278 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+7*G })
+}
+// Descente plafond 278-298 : Y=7 → Y=5 (1 bloc tous les 10 blocs)
+for i in 278..288 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+6*G })
+}
+for i in 288..298 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G })
+}
+
+// Premiers spikes intro (blocs 263, 268) : sol
+$.add(obj { OBJ_ID: 8, X: 263*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 268*G+OX, Y: GY+G })
+
+// Spikes plafond (blocs 273, 278) : plafond Y=7 → spike Y=6
+$.add(obj { OBJ_ID: 8, X: 273*G+OX, Y: GY+6*G })
+$.add(obj { OBJ_ID: 8, X: 278*G+OX, Y: GY+5*G })
+
+// Double spike sol+plafond (bloc 283) : espace 4 blocs entre eux
+$.add(obj { OBJ_ID: 8, X: 283*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 283*G+OX, Y: GY+4*G })
+
+
+// ============================================================
+// PHASE D2 : Compression (blocs 298–370, beats 8–27 @x3)
+// Couloir fixé à 3.5 blocs, portail gravité flip
+// ============================================================
+
+// Plafond stabilisé Y=4 (couloir sol à Y=0, plafond à Y=4 = 4 blocs net)
+for i in 298..370 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+4*G })
+}
+
+// Spikes alternants (sol/plafond, 1 beat = 5 blocs)
+// Beat 8-14 : pattern alternant
+$.add(obj { OBJ_ID: 8, X: 300*G+OX, Y: GY+G   })  // Sol
+$.add(obj { OBJ_ID: 8, X: 305*G+OX, Y: GY+3*G })  // Plafond
+$.add(obj { OBJ_ID: 8, X: 310*G+OX, Y: GY+G   })  // Sol
+$.add(obj { OBJ_ID: 8, X: 315*G+OX, Y: GY+3*G })  // Plafond
+$.add(obj { OBJ_ID: 8, X: 320*G+OX, Y: GY+G   })  // Sol
+$.add(obj { OBJ_ID: 8, X: 325*G+OX, Y: GY+3*G })  // Plafond
+
+// Portail gravité INVERSE (bloc 328) — gravity flip
+$.add(obj { OBJ_ID: 11, X: 328*G+OX, Y: GY+2*G })
+
+// Après flip : joueur colle au plafond
+// Spikes maintenant "sol" du côté plafond
+$.add(obj { OBJ_ID: 8, X: 333*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 338*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 343*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 348*G+OX, Y: GY+G   })
+
+// Portail gravité NORMALE (bloc 353) — retour normal
+$.add(obj { OBJ_ID: 10, X: 353*G+OX, Y: GY+2*G })
+
+// Spike double après retour (bloc 358) : adaptation
+$.add(obj { OBJ_ID: 8, X: 358*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 363*G+OX, Y: GY+3*G })
+
+
+// ============================================================
+// PHASE D3 : Precision ship (blocs 370–450, beats 27–46 @x3)
+// Couloir réduit à 2.5 blocs — Extreme Demon territory
+// ============================================================
+
+// Couloir 2.5 blocs : plafond à Y=3 (avec spikes qui grignotent la marge)
+for i in 370..450 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G })
+}
+
+// Pattern mur-spike : spike de sol + spike de plafond consécutifs (1 bloc libres entre eux)
+// Chaque pair est à 1 beat (5 blocs à x3)
+$.add(obj { OBJ_ID: 8, X: 372*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 375*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 8, X: 378*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 383*G+OX, Y: GY+2*G })
+
+// Portail MINI (à vérifier OBJ_ID : 99 selon version GD)
+// Réduit le hitbox joueur, couloir de 1.5 bloc devient jouable
+// TODO: vérifier OBJ_ID mini portal dans BetterEdit
+$.add(obj { OBJ_ID: 99,  X: 388*G+OX, Y: GY+2*G })  // Mini on
+
+// Passage mini (blocs 388-415) : couloir réduit à Y=2
+for i in 388..415 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+2*G })
+}
+
+// Spikes dans passage mini (1 frame de marge à x3)
+$.add(obj { OBJ_ID: 8, X: 391*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 396*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 401*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 406*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 411*G+OX, Y: GY+G   })
+
+// Portail NORMAL (retour taille normale)
+$.add(obj { OBJ_ID: 101, X: 415*G+OX, Y: GY+2*G })  // Normal size — vérifier OBJ_ID
+
+// Réouverture progressive blocs 415-440
+for i in 415..430 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G })
+}
+for i in 430..450 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+4*G })
+}
+
+$.add(obj { OBJ_ID: 8, X: 420*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 425*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 8, X: 430*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 435*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 440*G+OX, Y: GY+3*G })
+
+
+// ============================================================
+// PHASE D4 : Boss ship (blocs 450–540, beats 46–57 @x3)
+// Couloir 2 blocs strict + double flip gravité
+// ============================================================
+
+// Couloir étroit Y=2 (2 blocs nets)
+for i in 450..510 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+2*G })
+}
+
+// Premier flip à blocs 455
+$.add(obj { OBJ_ID: 11, X: 455*G+OX, Y: GY+G })
+// Spikes flippés (5 beats, 5 blocs chacun)
+$.add(obj { OBJ_ID: 8, X: 458*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 463*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 468*G+OX, Y: GY+G   })
+
+// 2ème flip retour normal (bloc 473)
+$.add(obj { OBJ_ID: 10, X: 473*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 476*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 481*G+OX, Y: GY+G   })
+
+// 3ème flip inverse (bloc 486) — enchaînement rapide
+$.add(obj { OBJ_ID: 11, X: 486*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 489*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 494*G+OX, Y: GY+G   })
+
+// Retour normal (bloc 499)
+$.add(obj { OBJ_ID: 10, X: 499*G+OX, Y: GY+G })
+
+// Ouverture progressive vers le portail Wave (blocs 510-540)
+for i in 510..530 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G })
+}
+for i in 530..541 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+7*G })
+}
+$.add(obj { OBJ_ID: 8, X: 515*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 520*G+OX, Y: GY+4*G })
+$.add(obj { OBJ_ID: 8, X: 525*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 530*G+OX, Y: GY+4*G })
+
+// ─── PORTAIL WAVE + Speed x2 (début Section 3) ─────────────
+$.add(obj { OBJ_ID: 660, X: 537*G+OX, Y: GY+3*G })  // Wave portal
+$.add(obj { OBJ_ID: 202, X: 537*G+OX, Y: GY+3*G })  // Speed x2
+
+// ============================================================
+// FIN SECTION 2 — Section 3 : CORRUPTION (Wave x2) à X=537
+// ============================================================

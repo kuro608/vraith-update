@@ -1,0 +1,230 @@
+// ============================================================
+// VRAITH — Section 3 : CORRUPTION  (Wave x2/x3)
+// ============================================================
+// BPM     : 200  |  Beat = 0.300s = 72 frames
+// Mode    : Wave x2 (blocs 537-690) → Wave x3 (690-810)
+// vX x2   : 12.914 b/s  |  1 beat = 3.874 bl ≈ 4 blocs
+// vX x3   : 15.600 b/s  |  1 beat = 4.680 bl ≈ 5 blocs
+// Wave    : diagonal 45°  |  vy = ±vx  |  pas de saut
+//           Couloir min : 1.5 bl (Extreme) / 2.0 bl (Hard)
+// Début   : X=537 (suite Section 2)
+// ============================================================
+//
+// DESIGN WAVE :
+//   Trou = vide libre entre sol et plafond (en blocs)
+//   Pour passer en ligne droite : trou ≥ 1.5 bl (normal)
+//   Zigzag (haut-bas) : joueur effectue 180° en ~0.5 beat
+//   Virage serré : +/- 2 blocs de déviation en 1 beat
+// ============================================================
+
+let BEAT = 0.3
+let OX   = 195
+let GY   = 105
+let G    = 30
+
+let S    = 537  // Bloc de départ section 3
+
+
+// ============================================================
+// COULEUR — violet électrique (Wave drop)
+// ============================================================
+$.add(obj {
+    OBJ_ID: 899,
+    X: S*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1000g,
+    R: 5, G_VAL: 0, B: 25,
+    DURATION: 0.3
+})
+$.add(obj {
+    OBJ_ID: 899,
+    X: S*G+OX, Y: GY+3*G,
+    TARGET_COLOR: 1g,
+    R: 80, G_VAL: 0, B: 255,
+    DURATION: 0.3
+})
+
+// Pulse couleur plus rapide en Wave (1 beat = 0.3s)
+for i in 0..100 {
+    wait(BEAT * i)
+    1000c.pulse(r=0, g=0, b=40, fade_out=0.15, exclusive=false)
+}
+
+
+// ============================================================
+// PHASE E1 : Intro Wave x2 (blocs 537–595, beats 0–15 @x2)
+// Couloir 3-4 blocs, zigzag modéré pour calibration
+// ============================================================
+
+// Couloir départ large (4 blocs nets)
+// Sol = S+i*G + GY  (déjà posé)
+// Plafond variable selon pattern
+
+// PATTERN ZIGZAG : corridors alternant haut-bas
+// Chaque segment dure 1 beat (4 blocs à x2)
+
+// Segment 1 (537-541) : couloir centré Y=2-5 (plafond Y=5)
+for i in 537..542 { $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G }) }
+
+// Segment 2 (541-545) : couloir bas Y=1-4 (plafond Y=4)
+for i in 541..546 { $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+4*G }) }
+
+// Segment 3 (545-549) : couloir haut Y=2-5 de nouveau
+for i in 545..550 { $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G }) }
+
+// Segment 4 (549-553) : descente brusque Y=3
+for i in 549..554 { $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G }) }
+
+// Segment 5-10 : alternance avec spikes sur les murs
+for i in 553..557 { $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G }) }
+$.add(obj { OBJ_ID: 8, X: 555*G+OX, Y: GY+G   })  // Spike sol
+for i in 557..561 { $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G }) }
+$.add(obj { OBJ_ID: 8, X: 559*G+OX, Y: GY+2*G })  // Spike plafond
+
+for i in 561..565 { $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G }) }
+$.add(obj { OBJ_ID: 8, X: 562*G+OX, Y: GY+G   })
+for i in 565..569 { $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G }) }
+$.add(obj { OBJ_ID: 8, X: 567*G+OX, Y: GY+2*G })
+
+for i in 569..573 { $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G }) }
+$.add(obj { OBJ_ID: 8, X: 570*G+OX, Y: GY+G   })
+for i in 573..577 { $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G }) }
+$.add(obj { OBJ_ID: 8, X: 575*G+OX, Y: GY+2*G })
+
+
+// ============================================================
+// PHASE E2 : Corridors étroits x2 (blocs 577–640, beats 10–27)
+// Couloir 2 blocs — Extreme Demon standard
+// ============================================================
+
+// Couloir à 2 blocs, position variable (zigzag serré)
+// Zigzag haut : plafond Y=3, sol Y=0 → passage Y=1-2
+// Zigzag bas  : plafond Y=2, sol Y=0 → passage Y=1
+
+// Zigzag HAUT (4 blocs)
+for i in 577..581 { $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G }) }
+// Spike dans le passage (1 bloc libre)
+$.add(obj { OBJ_ID: 8, X: 578*G+OX, Y: GY+G })
+
+// Zigzag BAS (4 blocs)
+for i in 581..585 { $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+2*G }) }
+$.add(obj { OBJ_ID: 8, X: 583*G+OX, Y: GY+G })
+
+// Répéter 6 fois le pattern haut/bas
+for cycle in 0..6 {
+    let base = 585 + cycle * 8
+    // HAUT : plafond Y=4, spike Y=G
+    for i in base..(base+4) {
+        $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+4*G })
+    }
+    $.add(obj { OBJ_ID: 8, X: (base+1)*G+OX, Y: GY+G })
+    // BAS : plafond Y=2, spike Y=G
+    for i in (base+4)..(base+8) {
+        $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+2*G })
+    }
+    $.add(obj { OBJ_ID: 8, X: (base+5)*G+OX, Y: GY+G })
+}
+// Phase E2 se termine à 585 + 6*8 = 633
+
+// Transition : 3 blocs de répit (couloir large)
+for i in 633..637 { $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G }) }
+
+
+// ============================================================
+// PHASE E3 : Slalom diagonal (blocs 637–690, beats 27–39 @x2)
+// Obstacles en diagonale, rythme 0.5 beat
+// ============================================================
+
+// Pattern slalom : "mur" en diagonale descendante
+// Chaque mur est 2 blocs de hauteur décalés de 1 vers le bas
+
+// Mur 1 à bloc 637 (Y=2 à Y=3)
+$.add(obj { OBJ_ID: 1, X: 637*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 1, X: 637*G+OX, Y: GY+3*G })
+// Mur 2 à bloc 639 (Y=3 à Y=4) — décalé vers le haut
+$.add(obj { OBJ_ID: 1, X: 639*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 1, X: 639*G+OX, Y: GY+4*G })
+// Mur 3 à bloc 641 (Y=2 à Y=3) — décalé vers le bas
+$.add(obj { OBJ_ID: 1, X: 641*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 1, X: 641*G+OX, Y: GY+3*G })
+// Plafond bas continu (Y=5)
+for i in 637..660 { $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G }) }
+
+// Répétition du slalom sur 53 blocs
+for j in 0..6 {
+    let bx = 643 + j * 8
+    $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+2*G })
+    $.add(obj { OBJ_ID: 1, X: bx*G+OX, Y: GY+3*G })
+    $.add(obj { OBJ_ID: 1, X: (bx+2)*G+OX, Y: GY+3*G })
+    $.add(obj { OBJ_ID: 1, X: (bx+2)*G+OX, Y: GY+4*G })
+    $.add(obj { OBJ_ID: 1, X: (bx+4)*G+OX, Y: GY+2*G })
+    $.add(obj { OBJ_ID: 1, X: (bx+4)*G+OX, Y: GY+3*G })
+}
+// termine à 643 + 6*8 = 691
+
+// ─── PORTAIL SPEED x3 (bloc 690) ───────────────────────────
+$.add(obj { OBJ_ID: 203, X: 690*G+OX, Y: GY+3*G })
+
+
+// ============================================================
+// PHASE E4 : Wave x3 — boss section (blocs 690–810, beats 0–25 @x3)
+// Couloir 1.5-2 blocs — zone de mort à 15.6 b/s
+// 1 beat = 4.680 blocs ≈ 5 blocs
+// ============================================================
+
+// Plafond serré Y=2 pour tout le segment boss
+for i in 690..730 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+2*G })
+}
+
+// Pattern zigzag serré à x3 : chaque demi-beat = 2.34 blocs ≈ 2 blocs
+// Joueur doit alterner haut/bas toutes les 2 blocs
+
+// Série de spikes (1 tous les 5 blocs = 1 beat)
+$.add(obj { OBJ_ID: 8, X: 693*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 698*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 703*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 708*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 713*G+OX, Y: GY+G })
+
+// Ouverture soudaine + double spike (trompe l'oeil)
+for i in 730..740 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+5*G })
+}
+$.add(obj { OBJ_ID: 8, X: 731*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 731*G+OX, Y: GY+4*G })
+$.add(obj { OBJ_ID: 8, X: 735*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 735*G+OX, Y: GY+4*G })
+
+// Retour couloir ultra-serré (Y=1.5 — mini obligatoire)
+// Portail mini wave (bloc 740)
+$.add(obj { OBJ_ID: 99,  X: 740*G+OX, Y: GY+G })  // Mini on
+
+for i in 740..780 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+2*G })
+}
+
+// Dans le couloir mini wave : spikes toutes les 4 blocs (0.8 beat)
+for k in 0..10 {
+    $.add(obj { OBJ_ID: 8, X: (742 + k*4)*G+OX, Y: GY+G })
+}
+
+// Retour taille normale (bloc 780)
+$.add(obj { OBJ_ID: 101, X: 780*G+OX, Y: GY+G })
+
+// Sequence finale wave avant cube (blocs 780-810)
+for i in 780..810 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+4*G })
+}
+$.add(obj { OBJ_ID: 8, X: 783*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 788*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 793*G+OX, Y: GY+G   })
+$.add(obj { OBJ_ID: 8, X: 798*G+OX, Y: GY+3*G })
+$.add(obj { OBJ_ID: 8, X: 803*G+OX, Y: GY+G   })
+
+// ─── PORTAIL CUBE + Speed x2 (début Section 4) ─────────────
+$.add(obj { OBJ_ID: 12,  X: 808*G+OX, Y: GY+2*G })  // Cube portal
+$.add(obj { OBJ_ID: 202, X: 808*G+OX, Y: GY+2*G })  // Speed x2
+
+// ============================================================
+// FIN SECTION 3 — Section 4 : APEX (Cube x2 + Robot) à X=808
+// ============================================================
