@@ -1,0 +1,237 @@
+// ============================================
+// VRAITH - Section 1: AWAKENING
+// ============================================
+// BPM     : 200 | Beat = 0.3s
+// Mode    : Cube x1 → Cube x2 → Ship x3
+// Durée   : 0:00 → 0:40 (~133 beats)
+// X range : blocs 0 → 270
+// ============================================
+// COORDONNÉES :
+//   X brut = (bloc * 30) + 195
+//   Y brut = (rangée * 30) + 105
+//   Sol = Y 105 | +1 bloc = +30
+// ============================================
+// IDs À VÉRIFIER si import échoue :
+//   Yellow orb   = 84
+//   Red orb      = 1333
+//   Green orb    = 85  ← vérifier dans BetterEdit
+//   Alpha trigger= 1007 ← vérifier
+//   Speed x2     = 202
+//   Speed x3     = 203
+//   Ship portal  = 13
+// ============================================
+
+let BEAT = 0.3   // 60s / 200 BPM
+let OX   = 195   // offset X (spawn joueur)
+let GY   = 105   // ground Y
+let G    = 30    // taille d'un bloc
+
+
+// ============================================
+// COULEURS INITIALES
+// ============================================
+// 1000 = Background
+// 1001 = Ground
+// 1    = Objets principaux
+// 2    = Outlines spikes
+
+1000c.set(r=8,   g=8,   b=8,   duration=0)  // BG  : noir quasi-pur
+1001c.set(r=26,  g=0,   b=0,   duration=0)  // Sol : bordeaux sombre
+1c.set(   r=200, g=162, b=0,   duration=0)  // Or  : couleur principale
+2c.set(   r=139, g=0,   b=0,   duration=0)  // Rouge sang : outlines
+
+
+// ============================================
+// PULSE SYSTEM — beat tous les 0.6s (2 beats)
+// 66 pulses couvrent la section entière
+// ============================================
+for i in 0..66 {
+    wait(BEAT * 2 * i)
+    1000c.pulse(
+        r=50, g=0, b=0,
+        fade_out=0.2,
+        exclusive=false
+    )
+}
+
+
+// ============================================
+// BLOC A — Intro lente (blocs 0 → 105, x1)
+// ============================================
+
+// --- Sol principal blocs 0-14 ---
+for i in 0..15 {
+    $.add(obj {
+        OBJ_ID: 1,
+        X: i*G + OX,
+        Y: GY
+    })
+}
+
+// --- X=15 : 1er spike (beat 5) ---
+$.add(obj { OBJ_ID: 8, X: 15*G+OX, Y: GY+G })
+
+// --- Sol 16-20 ---
+for i in 16..21 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY })
+}
+
+// --- X=21 : 2ème spike (beat 7) ---
+$.add(obj { OBJ_ID: 8, X: 21*G+OX, Y: GY+G })
+
+// --- Sol 22-26 ---
+for i in 22..27 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY })
+}
+
+// --- X=27 : Orbe Jaune (beat 9) — saut maintenu ---
+$.add(obj { OBJ_ID: 84, X: 27*G+OX, Y: GY+G })
+
+// --- Plafond bas X=28 à X=36 (hauteur Y=3) ---
+for i in 28..37 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G })
+}
+
+// --- Sol 28-38 ---
+for i in 28..39 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY })
+}
+
+// --- X=39 : Sol monte à Y=2 (mur d'escalier) ---
+for i in 39..45 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY    })
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+G  })
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+2*G})
+}
+
+// --- X=45 : Spike Y=2 (beat 15) ---
+$.add(obj { OBJ_ID: 8, X: 45*G+OX, Y: GY+2*G })
+
+// --- X=48 : Spike Y=2 enchaîné (beat 16) ---
+$.add(obj { OBJ_ID: 8, X: 48*G+OX, Y: GY+2*G })
+
+// --- X=54 : Orbe Vert NO-HOLD (beat 18) ---
+$.add(obj { OBJ_ID: 85, X: 54*G+OX, Y: GY+2*G })
+
+// --- X=57 : Orbe Vert HOLD (beat 19) ---
+$.add(obj { OBJ_ID: 85, X: 57*G+OX, Y: GY+4*G })
+
+// --- X=63 : Spike Y=4 précis (beat 21) ---
+$.add(obj { OBJ_ID: 8, X: 63*G+OX, Y: GY+4*G })
+
+// --- Sol 64-104 ---
+for i in 64..105 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY })
+}
+
+
+// ============================================
+// BLOC B — Montée rythmique (blocs 105→210, x2)
+// ============================================
+
+// --- Portail Speed x2 ---
+$.add(obj { OBJ_ID: 202, X: 105*G+OX, Y: GY+G })
+
+// --- Sol 105-210 ---
+for i in 105..211 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY })
+}
+
+// --- Pattern DEBUT : 2 spikes rapides ---
+$.add(obj { OBJ_ID: 8, X: 109*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 113*G+OX, Y: GY+G })
+
+// --- Orbe haut + Orbe bas enchaîné ---
+$.add(obj { OBJ_ID: 84, X: 117*G+OX, Y: GY+3*G })  // Orbe haut
+$.add(obj { OBJ_ID: 84, X: 118*G+OX, Y: GY+G    })  // Orbe bas enchaîné 0.1s
+
+// --- Pattern H-B-H ---
+$.add(obj { OBJ_ID: 8, X: 121*G+OX, Y: GY+4*G })  // Spike HAUT
+$.add(obj { OBJ_ID: 8, X: 125*G+OX, Y: GY+G   })  // Spike BAS
+$.add(obj { OBJ_ID: 8, X: 129*G+OX, Y: GY+4*G })  // Spike HAUT
+
+// --- STAIRCASE X=133 à X=145 ---
+// Marche 1 (X=133) : sol monte à Y=3, spike Y=4
+for row in 0..4 {
+    $.add(obj { OBJ_ID: 1, X: 133*G+OX, Y: GY+row*G })
+}
+$.add(obj { OBJ_ID: 8, X: 133*G+OX, Y: GY+4*G })
+
+// Marche 2 (X=137) : sol monte à Y=4, spike Y=5
+for row in 0..5 {
+    $.add(obj { OBJ_ID: 1, X: 137*G+OX, Y: GY+row*G })
+}
+$.add(obj { OBJ_ID: 8, X: 137*G+OX, Y: GY+5*G })
+
+// Marche 3 (X=141) : sol monte à Y=5, spike Y=6
+for row in 0..6 {
+    $.add(obj { OBJ_ID: 1, X: 141*G+OX, Y: GY+row*G })
+}
+$.add(obj { OBJ_ID: 8, X: 141*G+OX, Y: GY+6*G })
+
+// --- FAUX SOL — blocs 153-157 (Groupe 21 = disparaissent) ---
+// Alpha trigger déclenché à X=149 (Groupe 20 → cible Groupe 21)
+$.add(obj {
+    OBJ_ID: 1007,       // Alpha Trigger (à vérifier)
+    X: 149*G+OX,
+    Y: GY+G,
+    TARGET: 21g,
+    ALPHA: 0,
+    DURATION: 0
+})
+
+// Blocs du faux sol (groupe 21, disparaissent via alpha trigger)
+for i in 153..158 {
+    $.add(obj {
+        OBJ_ID: 1,
+        X: i*G+OX,
+        Y: GY,
+        GROUPS: 21g
+    })
+}
+
+// Orbe Jaune dans le vide (rattraper le trou)
+$.add(obj { OBJ_ID: 84,   X: 157*G+OX, Y: GY+G    })
+
+// Orbe Rouge (bounce)
+$.add(obj { OBJ_ID: 1333, X: 165*G+OX, Y: GY+2*G  })
+
+// Orbe Jaune haut (passe sous le prochain plafond)
+$.add(obj { OBJ_ID: 84,   X: 169*G+OX, Y: GY+5*G  })
+
+
+// ============================================
+// BLOC C — Pré-drop (blocs 210→270, x2)
+// Transition vers Section 2 (SHIP x3)
+// ============================================
+
+// --- Sol 211-257 ---
+for i in 211..258 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY })
+}
+
+// --- Pattern 3 spikes (signature du riff de guitare) ---
+$.add(obj { OBJ_ID: 8, X: 210*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 214*G+OX, Y: GY+G })
+$.add(obj { OBJ_ID: 8, X: 218*G+OX, Y: GY+G })
+
+// --- Orbe Rouge + Orbe Jaune enchaîné ---
+$.add(obj { OBJ_ID: 1333, X: 222*G+OX, Y: GY+2*G })
+$.add(obj { OBJ_ID: 84,   X: 226*G+OX, Y: GY+5*G })
+
+// --- Mini passage plafond serré (Y=3 pendant 8 blocs) ---
+for i in 230..238 {
+    $.add(obj { OBJ_ID: 1, X: i*G+OX, Y: GY+3*G })
+}
+
+// --- Dernier orbe avant portail ---
+$.add(obj { OBJ_ID: 84, X: 250*G+OX, Y: GY+G })
+
+// --- PORTAIL SHIP + Speed x3 (entrée Section 2) ---
+$.add(obj { OBJ_ID: 13,  X: 258*G+OX, Y: GY+G })  // Mode SHIP
+$.add(obj { OBJ_ID: 203, X: 258*G+OX, Y: GY+G })  // Speed x3
+
+// ============================================
+// FIN — SECTION 1 : AWAKENING
+// Section 2 commence à X=258 (SHIP, speed x3)
+// ============================================

@@ -1,0 +1,586 @@
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Vraith — Blueprint S1</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Share+Tech+Mono&display=swap">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --panel: #12121a;
+    --grid: #1e1e2e;
+    --grid-beat: #2a2a3e;
+    --grid-measure: #3a3a5e;
+    --fg: #c8c8e0;
+    --fg-dim: #6060a0;
+    --accent: #c8a200;
+    --block: #3a3060;
+    --block-border: #6050c0;
+    --spike: #ff3344;
+    --orb-yellow: #ffd700;
+    --orb-green: #44ff88;
+    --orb-red: #ff6622;
+    --orb-blue: #44aaff;
+    --portal-ship: #cc44ff;
+    --portal-speed: #ffffff;
+    --zone-1: rgba(100,80,200,0.07);
+    --zone-2: rgba(200,100,50,0.07);
+    --zone-3: rgba(50,200,150,0.07);
+    --ceiling: #3a3060;
+    --fakefloor: rgba(255,80,80,0.2);
+    --label-a: #a0a0ff;
+    --label-b: #ffaa44;
+    --label-c: #ff6688;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Rajdhani', sans-serif;
+    overflow-x: hidden;
+    padding-block: env(safe-area-inset-top, 0px) env(safe-area-inset-bottom, 0px);
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0 12px;
+    border-bottom: 1px solid var(--grid-beat);
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .title-block { display: flex; flex-direction: column; gap: 2px; }
+  h1 { font-size: 1.6rem; font-weight: 700; color: var(--accent); letter-spacing: 0.08em; text-transform: uppercase; }
+  .subtitle { font-size: 0.8rem; color: var(--fg-dim); font-family: 'Share Tech Mono', monospace; letter-spacing: 0.05em; }
+
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .ctrl-group { display: flex; align-items: center; gap: 8px; }
+  .ctrl-label { font-size: 0.72rem; color: var(--fg-dim); letter-spacing: 0.06em; text-transform: uppercase; }
+
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 90px;
+    height: 4px;
+    background: var(--grid-measure);
+    border-radius: 2px;
+    outline: none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 14px;
+    background: var(--accent);
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .zoom-val { font-family: 'Share Tech Mono', monospace; font-size: 0.78rem; color: var(--accent); width: 36px; }
+
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--grid-beat);
+  }
+  .leg-item { display: flex; align-items: center; gap: 6px; font-size: 0.72rem; color: var(--fg-dim); }
+  .leg-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  .leg-sq  { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
+  .leg-tri { width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; border-bottom: 12px solid var(--spike); }
+
+  .canvas-wrap {
+    overflow-x: auto;
+    overflow-y: hidden;
+    position: relative;
+    margin-top: 14px;
+    border: 1px solid var(--grid-beat);
+    border-radius: 6px;
+    background: var(--panel);
+    cursor: grab;
+    user-select: none;
+  }
+  .canvas-wrap:active { cursor: grabbing; }
+
+  canvas { display: block; }
+
+  .info-bar {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 10px 0 4px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--fg-dim);
+  }
+  .info-item { display: flex; gap: 6px; }
+  .info-val { color: var(--fg); }
+
+  .sections-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+  }
+  .section-card {
+    border-radius: 6px;
+    border: 1px solid var(--grid-measure);
+    padding: 10px 14px;
+    flex: 1;
+    min-width: 160px;
+    background: var(--panel);
+  }
+  .section-card h3 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+  .section-card ul { list-style: none; font-size: 0.75rem; color: var(--fg-dim); font-family: 'Share Tech Mono', monospace; line-height: 1.8; }
+  .section-card ul li span { color: var(--fg); }
+  .ca { border-color: var(--label-a); }
+  .ca h3 { color: var(--label-a); }
+  .cb { border-color: var(--label-b); }
+  .cb h3 { color: var(--label-b); }
+  .cc { border-color: var(--label-c); }
+  .cc h3 { color: var(--label-c); }
+</style>
+
+<header>
+  <div class="title-block">
+    <h1>VRAITH</h1>
+    <div class="subtitle">Section 1 — AWAKENING · 200 BPM · Cube ×1→×2→Ship ×3</div>
+  </div>
+  <div class="controls">
+    <div class="ctrl-group">
+      <span class="ctrl-label">Zoom</span>
+      <input type="range" id="zoom" min="14" max="40" value="24" step="1">
+      <span class="zoom-val" id="zoomVal">24px</span>
+    </div>
+  </div>
+</header>
+
+<div class="legend">
+  <div class="leg-item"><div class="leg-sq" style="background:var(--block);border:1px solid var(--block-border)"></div> Bloc solide</div>
+  <div class="leg-item"><div class="leg-tri"></div> Spike</div>
+  <div class="leg-item"><div class="leg-dot" style="background:var(--orb-yellow);box-shadow:0 0 6px var(--orb-yellow)"></div> Orbe Jaune</div>
+  <div class="leg-item"><div class="leg-dot" style="background:var(--orb-green);box-shadow:0 0 6px var(--orb-green)"></div> Orbe Vert</div>
+  <div class="leg-item"><div class="leg-dot" style="background:var(--orb-red);box-shadow:0 0 6px var(--orb-red)"></div> Orbe Rouge</div>
+  <div class="leg-item"><div class="leg-sq" style="background:var(--portal-ship);width:8px;height:14px;border-radius:2px"></div> Portail Ship</div>
+  <div class="leg-item"><div class="leg-sq" style="background:rgba(255,80,80,0.3);border:1px dashed var(--spike)"></div> Faux sol ⚠️</div>
+  <div class="leg-item" style="margin-left:auto"><div class="leg-sq" style="background:rgba(100,80,200,0.3);width:20px"></div> ×1 &nbsp;<div class="leg-sq" style="background:rgba(200,100,50,0.3);width:20px"></div> ×2 &nbsp;<div class="leg-sq" style="background:rgba(50,200,150,0.3);width:20px"></div> ×3</div>
+</div>
+
+<div class="canvas-wrap" id="wrap">
+  <canvas id="c"></canvas>
+</div>
+
+<div class="info-bar">
+  <div class="info-item">Blocs total: <span class="info-val">270</span></div>
+  <div class="info-item">Durée: <span class="info-val">~40s</span></div>
+  <div class="info-item">Beats: <span class="info-val">133</span></div>
+  <div class="info-item">1 beat: <span class="info-val">3 blocs (×1) / 4 blocs (×2)</span></div>
+</div>
+
+<div class="sections-row">
+  <div class="section-card ca">
+    <h3>Bloc A — ×1</h3>
+    <ul>
+      <li>Blocs: <span>0 → 104</span></li>
+      <li>Mode: <span>Cube ×1</span></li>
+      <li>Diff: <span>★★★☆☆</span></li>
+      <li>Key: <span>Orbes verts enchaînés</span></li>
+      <li>Cible: <span>~50% de réussite</span></li>
+    </ul>
+  </div>
+  <div class="section-card cb">
+    <h3>Bloc B — ×2</h3>
+    <ul>
+      <li>Blocs: <span>105 → 209</span></li>
+      <li>Mode: <span>Cube ×2</span></li>
+      <li>Diff: <span>★★★★☆</span></li>
+      <li>Key: <span>Staircase + faux sol</span></li>
+      <li>Cible: <span>~30% de réussite</span></li>
+    </ul>
+  </div>
+  <div class="section-card cc">
+    <h3>Bloc C — ×2→×3</h3>
+    <ul>
+      <li>Blocs: <span>210 → 270</span></li>
+      <li>Mode: <span>Cube→Ship ×3</span></li>
+      <li>Diff: <span>★★★★★</span></li>
+      <li>Key: <span>Triple spike + passage serré</span></li>
+      <li>Cible: <span>transition Section 2</span></li>
+    </ul>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const wrap = document.getElementById('wrap');
+const zoomSlider = document.getElementById('zoom');
+const zoomVal = document.getElementById('zoomVal');
+
+let G = 24; // px per block
+const ROWS = 13; // rows visible
+const TOTAL_X = 272;
+
+// ---- OBJECTS ----
+const blocks = [];
+const spikes = [];
+const orbs = [];
+const portals = [];
+const ceilings = [];
+const fakeSol = [];
+
+// Helper
+function ground(x1, x2) {
+  for (let x = x1; x <= x2; x++) blocks.push({x, y:0});
+}
+function solidCol(x, y1, y2) {
+  for (let y = y1; y <= y2; y++) blocks.push({x, y});
+}
+
+// === BLOC A ===
+ground(0, 14);
+spikes.push({x:15, y:1});
+ground(16, 20);
+spikes.push({x:21, y:1});
+ground(22, 26);
+orbs.push({x:27, y:1, type:'yellow', label:'J'});
+// Ceiling X=28-36 at Y=3
+for (let x=28;x<=36;x++) ceilings.push({x, y:3});
+ground(28, 38);
+// raised ground X=39-44
+for (let x=39;x<=44;x++) { solidCol(x, 0, 2); }
+spikes.push({x:45, y:3});
+spikes.push({x:48, y:3});
+ground(45, 53);
+ground(48, 53);
+orbs.push({x:54, y:2, type:'green', label:'N'});
+orbs.push({x:57, y:4, type:'green', label:'H'});
+spikes.push({x:63, y:5});
+ground(64, 104);
+
+// === PORTAIL x2 ===
+portals.push({x:105, type:'speed2', label:'×2'});
+
+// === BLOC B ===
+ground(105, 210);
+spikes.push({x:109, y:1});
+spikes.push({x:113, y:1});
+orbs.push({x:117, y:3, type:'yellow', label:'J'});
+orbs.push({x:118, y:1, type:'yellow', label:'J'});
+spikes.push({x:121, y:4});
+spikes.push({x:125, y:1});
+spikes.push({x:129, y:4});
+// Staircase X=133
+solidCol(133, 0, 3); spikes.push({x:133, y:4});
+solidCol(137, 0, 4); spikes.push({x:137, y:5});
+solidCol(141, 0, 5); spikes.push({x:141, y:6});
+// Alpha trigger marker at X=149
+portals.push({x:149, type:'alpha', label:'α'});
+// Fake floor X=153-157
+for (let x=153;x<=157;x++) fakeSol.push({x, y:0});
+orbs.push({x:157, y:1, type:'yellow', label:'J'});
+orbs.push({x:165, y:2, type:'red', label:'R'});
+orbs.push({x:169, y:5, type:'yellow', label:'J'});
+
+// === BLOC C ===
+ground(211, 257);
+spikes.push({x:210, y:1});
+spikes.push({x:214, y:1});
+spikes.push({x:218, y:1});
+orbs.push({x:222, y:2, type:'red', label:'R'});
+orbs.push({x:226, y:5, type:'yellow', label:'J'});
+// Ceiling X=230-237 at Y=3
+for (let x=230;x<=237;x++) ceilings.push({x, y:3});
+orbs.push({x:250, y:1, type:'yellow', label:'J'});
+
+// Ship portal + speed x3
+portals.push({x:258, type:'ship', label:'SHIP'});
+portals.push({x:260, type:'speed3', label:'×3'});
+
+// ---- COLORS (CSS vars read at runtime) ----
+const style = getComputedStyle(document.documentElement);
+const C = {
+  bg:       '#0a0a0f',
+  panel:    '#12121a',
+  grid:     '#1e1e2e',
+  gridBeat: '#2a2a3e',
+  gridMeas: '#3a3a5e',
+  fg:       '#c8c8e0',
+  fgDim:    '#6060a0',
+  accent:   '#c8a200',
+  block:    '#3a3060',
+  blockB:   '#6050c0',
+  spike:    '#ff3344',
+  orbY:     '#ffd700',
+  orbG:     '#44ff88',
+  orbR:     '#ff6622',
+  ship:     '#cc44ff',
+  alpha:    '#ff8844',
+  ceil:     '#2a2050',
+  ceilB:    '#5040a0',
+  fake:     'rgba(255,60,60,0.25)',
+  fakeB:    '#ff3344',
+  zone1:    'rgba(100,80,200,0.07)',
+  zone2:    'rgba(200,100,50,0.07)',
+  zone3:    'rgba(50,200,150,0.07)',
+};
+
+function draw() {
+  const W = TOTAL_X * G;
+  const H = (ROWS + 3) * G;
+  canvas.width = W;
+  canvas.height = H;
+
+  const TOP = G * 1.5; // top margin for labels
+  const GY = H - G * 1.5; // y=0 ground in px (from top)
+
+  function px(bx, by) {
+    return { x: bx * G, y: GY - by * G };
+  }
+
+  // BG
+  ctx.fillStyle = C.bg;
+  ctx.fillRect(0, 0, W, H);
+
+  // Speed zones
+  ctx.fillStyle = C.zone1;
+  ctx.fillRect(0, 0, 105*G, H);
+  ctx.fillStyle = C.zone2;
+  ctx.fillRect(105*G, 0, 153*G, H);
+  ctx.fillStyle = C.zone3;
+  ctx.fillRect(258*G, 0, 14*G, H);
+
+  // Grid
+  for (let x = 0; x <= TOTAL_X; x++) {
+    const isMeasure = x % 12 === 0;
+    const isBeat = x % 3 === 0;
+    ctx.strokeStyle = isMeasure ? C.gridMeas : isBeat ? C.gridBeat : C.grid;
+    ctx.lineWidth = isMeasure ? 1 : 0.5;
+    ctx.beginPath();
+    ctx.moveTo(x*G, 0);
+    ctx.lineTo(x*G, H);
+    ctx.stroke();
+  }
+  for (let y = 0; y <= ROWS; y++) {
+    const py = GY - y * G;
+    ctx.strokeStyle = y === 0 ? C.gridMeas : C.grid;
+    ctx.lineWidth = y === 0 ? 1.5 : 0.5;
+    ctx.beginPath();
+    ctx.moveTo(0, py);
+    ctx.lineTo(W, py);
+    ctx.stroke();
+  }
+
+  // Beat numbers along top
+  ctx.font = `${Math.max(7, G*0.38)}px 'Share Tech Mono', monospace`;
+  ctx.fillStyle = C.fgDim;
+  ctx.textAlign = 'center';
+  for (let b = 0; b * 3 <= TOTAL_X; b++) {
+    const bx = b * 3;
+    if (b % 4 === 0) {
+      ctx.fillText(`b${b+1}`, bx*G + G*1.5, TOP - 4);
+    }
+  }
+
+  // Block X positions along bottom
+  ctx.fillStyle = C.fgDim;
+  ctx.font = `${Math.max(7, G*0.35)}px 'Share Tech Mono', monospace`;
+  for (let x = 0; x <= TOTAL_X; x += 12) {
+    ctx.fillText(x, x*G + G*0.5, H - 4);
+  }
+
+  // Section labels
+  function sectionLabel(bx, label, color) {
+    const p = px(bx, ROWS + 0.8);
+    ctx.font = `bold ${Math.max(10, G*0.55)}px 'Rajdhani', sans-serif`;
+    ctx.fillStyle = color;
+    ctx.textAlign = 'left';
+    ctx.fillText(label, p.x + 4, TOP + G*0.4);
+  }
+  // Zone backgrounds for labels
+  const sections = [
+    {x1:0, x2:105, label:'BLOC A · ×1 · Cube', color:'#a0a0ff'},
+    {x1:105, x2:210, label:'BLOC B · ×2 · Cube', color:'#ffaa44'},
+    {x1:210, x2:270, label:'BLOC C · ×2→×3 · Ship', color:'#ff6688'},
+  ];
+  sections.forEach(s => {
+    ctx.font = `bold ${Math.max(9, G*0.5)}px 'Rajdhani', sans-serif`;
+    ctx.fillStyle = s.color + '99';
+    ctx.textAlign = 'left';
+    ctx.fillText(s.label, s.x1*G + 4, TOP - 4 + G*0.7);
+  });
+
+  // Fake floor (dashed, red tint)
+  fakeSol.forEach(({x, y}) => {
+    const p = px(x, y);
+    ctx.fillStyle = C.fake;
+    ctx.fillRect(p.x, p.y - G, G, G);
+    ctx.strokeStyle = C.fakeB;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3,3]);
+    ctx.strokeRect(p.x+0.5, p.y - G+0.5, G-1, G-1);
+    ctx.setLineDash([]);
+  });
+
+  // Ceiling blocks
+  ceilings.forEach(({x, y}) => {
+    const p = px(x, y);
+    ctx.fillStyle = C.ceil;
+    ctx.fillRect(p.x, p.y - G, G, G);
+    ctx.strokeStyle = C.ceilB;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(p.x+0.5, p.y - G+0.5, G-1, G-1);
+    // hatch
+    ctx.strokeStyle = C.ceilB + '44';
+    ctx.lineWidth = 0.5;
+    for (let d = 0; d < G*2; d += 6) {
+      ctx.beginPath();
+      ctx.moveTo(p.x + d, p.y - G);
+      ctx.lineTo(p.x, p.y - G + d);
+      ctx.stroke();
+    }
+  });
+
+  // Blocks
+  blocks.forEach(({x, y}) => {
+    const p = px(x, y);
+    ctx.fillStyle = C.block;
+    ctx.fillRect(p.x, p.y - G, G, G);
+    ctx.strokeStyle = C.blockB;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(p.x+0.5, p.y - G + 0.5, G-1, G-1);
+    // Inner highlight line
+    ctx.strokeStyle = C.blockB + '50';
+    ctx.lineWidth = 0.5;
+    ctx.strokeRect(p.x+2, p.y - G + 2, G-4, G-4);
+  });
+
+  // Spikes
+  spikes.forEach(({x, y}) => {
+    const p = px(x, y);
+    ctx.fillStyle = C.spike;
+    ctx.shadowColor = C.spike;
+    ctx.shadowBlur = G * 0.3;
+    ctx.beginPath();
+    ctx.moveTo(p.x + G*0.1, p.y);
+    ctx.lineTo(p.x + G*0.9, p.y);
+    ctx.lineTo(p.x + G*0.5, p.y - G*0.92);
+    ctx.closePath();
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    // outline
+    ctx.strokeStyle = '#ff000088';
+    ctx.lineWidth = 0.8;
+    ctx.stroke();
+  });
+
+  // Orbs
+  orbs.forEach(({x, y, type, label}) => {
+    const p = px(x, y);
+    const cx2 = p.x + G*0.5;
+    const cy2 = p.y - G*0.5;
+    const r = G * 0.38;
+    const col = type === 'yellow' ? C.orbY : type === 'green' ? C.orbG : type === 'red' ? C.orbR : C.orbY;
+    ctx.shadowColor = col;
+    ctx.shadowBlur = G * 0.5;
+    ctx.fillStyle = col;
+    ctx.beginPath();
+    ctx.arc(cx2, cy2, r, 0, Math.PI*2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.strokeStyle = '#ffffff44';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    // inner ring
+    ctx.strokeStyle = col + 'aa';
+    ctx.beginPath();
+    ctx.arc(cx2, cy2, r + 3, 0, Math.PI*2);
+    ctx.stroke();
+    // Label
+    ctx.fillStyle = '#000';
+    ctx.font = `bold ${Math.max(6, G*0.4)}px 'Share Tech Mono', monospace`;
+    ctx.textAlign = 'center';
+    ctx.fillText(label, cx2, cy2 + G*0.14);
+  });
+
+  // Portals
+  portals.forEach(({x, type, label}) => {
+    const p = px(x, 0);
+    let col = type === 'ship' ? C.ship : type === 'alpha' ? C.alpha : type === 'speed3' ? '#00ffcc' : C.accent;
+    ctx.fillStyle = col + '33';
+    ctx.strokeStyle = col;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash(type === 'alpha' ? [4,3] : []);
+    // Vertical line through full height
+    ctx.beginPath();
+    ctx.moveTo(x*G + G*0.5, TOP);
+    ctx.lineTo(x*G + G*0.5, p.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // Portal frame
+    const ph = G * 4;
+    const pw = G * 0.7;
+    ctx.fillRect(x*G + G*0.5 - pw/2, p.y - ph, pw, ph);
+    ctx.strokeRect(x*G + G*0.5 - pw/2, p.y - ph, pw, ph);
+    // Label
+    ctx.fillStyle = col;
+    ctx.font = `bold ${Math.max(8, G*0.45)}px 'Rajdhani', sans-serif`;
+    ctx.textAlign = 'center';
+    const lx = x*G + G*0.5;
+    const ly = p.y - ph - 4;
+    ctx.fillText(label, lx, ly);
+  });
+
+  // Ground line thick
+  ctx.strokeStyle = C.gridMeas;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(0, GY);
+  ctx.lineTo(W, GY);
+  ctx.stroke();
+
+  // Beat tick marks on ground line
+  for (let b = 0; b * 3 <= TOTAL_X; b++) {
+    const bx = b * 3 * G;
+    ctx.strokeStyle = b % 4 === 0 ? C.gridMeas : C.gridBeat;
+    ctx.lineWidth = b % 4 === 0 ? 1.5 : 0.8;
+    ctx.beginPath();
+    ctx.moveTo(bx, GY);
+    ctx.lineTo(bx, GY + G*0.25);
+    ctx.stroke();
+  }
+}
+
+function resize() {
+  G = parseInt(zoomSlider.value);
+  zoomVal.textContent = G + 'px';
+  draw();
+}
+
+zoomSlider.addEventListener('input', resize);
+
+// Drag to pan
+let dragging = false, startX = 0, scrollStart = 0;
+wrap.addEventListener('mousedown', e => { dragging = true; startX = e.clientX; scrollStart = wrap.scrollLeft; });
+window.addEventListener('mouseup', () => dragging = false);
+window.addEventListener('mousemove', e => {
+  if (!dragging) return;
+  wrap.scrollLeft = scrollStart - (e.clientX - startX);
+});
+
+// Touch
+wrap.addEventListener('touchstart', e => { startX = e.touches[0].clientX; scrollStart = wrap.scrollLeft; }, {passive:true});
+wrap.addEventListener('touchmove', e => {
+  wrap.scrollLeft = scrollStart - (e.touches[0].clientX - startX);
+}, {passive:true});
+
+draw();
+</script>

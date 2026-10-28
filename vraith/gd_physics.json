@@ -1,0 +1,417 @@
+{
+  "_meta": {
+    "jeu": "Geometry Dash 2.2",
+    "tps": 240,
+    "unite_bloc": "1 bloc = 1 case éditeur",
+    "unite_interne": "1 bloc = 30 unités internes GD",
+    "bpm_projet": 200,
+    "beat_duree_s": 0.3,
+    "date": "2026-10-28",
+    "source_principale": "P1kachu GD Physics (gdforum), community measurements, GD wiki",
+    "legende_confiance": {
+      "C": "Confirmé — source P1kachu ou technique vérifiable",
+      "M": "Mesuré communauté — fiable mais non-officiel",
+      "E": "Estimé — à calibrer in-game",
+      "X": "Inconnu"
+    }
+  },
+
+  "vitesses_horizontales": {
+    "_source": "P1kachu + community measurements",
+    "_confiance": "M",
+    "_unite": "blocs/seconde (1 bloc = 30u internes)",
+    "slow_x0_5":   { "bps": 8.372,  "ups": 251.16, "blocs_par_beat_200bpm": 2.512, "id_portail": 200 },
+    "normal_x1":   { "bps": 10.386, "ups": 311.58, "blocs_par_beat_200bpm": 3.116, "id_portail": 201 },
+    "fast_x2":     { "bps": 12.914, "ups": 387.42, "blocs_par_beat_200bpm": 3.874, "id_portail": 202 },
+    "faster_x3":   { "bps": 15.600, "ups": 468.00, "blocs_par_beat_200bpm": 4.680, "id_portail": 203 },
+    "fastest_x4":  { "bps": 19.200, "ups": 576.00, "blocs_par_beat_200bpm": 5.760, "id_portail": 1334 },
+    "_note_ups": "ups = unités internes/seconde = bps × 30"
+  },
+
+  "synchronisation_musicale": {
+    "_bpm": 200,
+    "beat_s":         0.300,
+    "demi_beat_s":    0.150,
+    "quart_beat_s":   0.075,
+    "mesure_4b_s":    1.200,
+    "blocs_par_beat": {
+      "x0_5": 2.512,
+      "x1":   3.116,
+      "x2":   3.874,
+      "x3":   4.680,
+      "x4":   5.760
+    },
+    "duree_totale_s":  420,
+    "total_beats":    1400,
+    "total_mesures":   350
+  },
+
+  "cube": {
+    "_confiance_global": "C",
+    "_source": "P1kachu physics thread",
+    "unites_internes": {
+      "vitesse_saut_u_s":   { "valeur": 1050, "confiance": "C", "note": "vy initiale au saut" },
+      "gravite_u_s2":       { "valeur": 3533, "confiance": "C", "note": "accélération vers le bas" },
+      "mini_multiplicateur":{ "valeur": 0.6,  "confiance": "C", "note": "mini = 60% des valeurs normales" }
+    },
+    "en_blocs": {
+      "vitesse_saut_bps":        { "valeur": 35.00, "confiance": "C", "calcul": "1050 / 30" },
+      "gravite_bps2":            { "valeur": 117.77,"confiance": "C", "calcul": "3533 / 30" },
+      "hauteur_saut_max_blocs":  { "valeur": 5.196, "confiance": "C", "calcul": "v² / (2g) = 1050² / (2×3533×30)" },
+      "duree_saut_montee_s":     { "valeur": 0.297, "confiance": "C", "calcul": "v / g = 1050 / 3533" },
+      "duree_saut_total_s":      { "valeur": 0.594, "confiance": "C", "calcul": "2 × montée" },
+      "hauteur_saut_mini_blocs": { "valeur": 3.118, "confiance": "C", "calcul": "5.196 × 0.6" }
+    },
+    "portee_horizontale_blocs": {
+      "x1": { "valeur": 6.17,  "confiance": "C", "calcul": "10.386 × 0.594" },
+      "x2": { "valeur": 7.67,  "confiance": "C", "calcul": "12.914 × 0.594" },
+      "x3": { "valeur": 9.27,  "confiance": "C", "calcul": "15.600 × 0.594" },
+      "x4": { "valeur": 11.40, "confiance": "C", "calcul": "19.200 × 0.594" }
+    },
+    "hitbox": {
+      "normal_blocs": { "valeur": "0.80 × 0.80", "confiance": "M" },
+      "mini_blocs":   { "valeur": "0.48 × 0.48", "confiance": "M" },
+      "_note": "hitbox légèrement plus petite que le sprite visuel"
+    },
+    "double_saut": false,
+    "saut_en_air": false,
+    "inputs": {
+      "tap":  "saut standard",
+      "hold": "identique au tap pour le cube",
+      "orbe_jaune": "saut forcé (même hauteur que saut normal)",
+      "orbe_rose":  "saut faible (environ 60% hauteur)",
+      "orbe_rouge": "rebond inversé — valeur analogue en négatif"
+    },
+    "calcul_saut_exact": {
+      "formule_hauteur": "H = v0² / (2 × g) où v0=35 b/s, g=117.77 b/s²",
+      "formule_portee":  "P = vitesse_h × (2 × v0 / g)",
+      "exemple_x2":      "P = 12.914 × (2×35 / 117.77) = 7.67 blocs"
+    }
+  },
+
+  "ship": {
+    "_confiance_global": "M",
+    "_source": "P1kachu + community",
+    "unites_internes": {
+      "gravite_relache_u_s2":  { "valeur": 3024, "confiance": "M", "note": "chute sans input" },
+      "thrust_maintenu_u_s2":  { "valeur": 3024, "confiance": "M", "note": "montée avec input = symmétrique" },
+      "vitesse_max_u_s":       { "valeur": 600,  "confiance": "M", "note": "terminal velocity vertical" }
+    },
+    "en_blocs": {
+      "gravite_relache_bps2":  { "valeur": 100.8, "confiance": "M", "calcul": "3024 / 30" },
+      "thrust_maintenu_bps2":  { "valeur": 100.8, "confiance": "M" },
+      "vitesse_max_bps":       { "valeur": 20.0,  "confiance": "M", "calcul": "600 / 30" }
+    },
+    "hitbox": {
+      "normal_blocs": { "valeur": "0.75 × 0.35", "confiance": "M", "note": "allongé horizontalement" },
+      "mini_blocs":   { "valeur": "0.45 × 0.21", "confiance": "M" }
+    },
+    "comportement": "accélération symétrique (hold = thrust up, relâché = gravité down)",
+    "inputs": {
+      "hold":    "monte — accélération constante vers le haut",
+      "relache": "descend — gravité constante vers le bas"
+    }
+  },
+
+  "ball": {
+    "_confiance_global": "M",
+    "_source": "P1kachu + community",
+    "unites_internes": {
+      "gravite_normale_u_s2":   { "valeur": 2800, "confiance": "M" },
+      "vitesse_flip_initiale":  { "valeur": 900,  "confiance": "M", "note": "vy au moment du gravity flip" }
+    },
+    "en_blocs": {
+      "gravite_bps2":           { "valeur": 93.3, "confiance": "M", "calcul": "2800 / 30" },
+      "vitesse_flip_bps":       { "valeur": 30.0, "confiance": "M" }
+    },
+    "hitbox": {
+      "normal_blocs": { "valeur": "0.80 × 0.80", "confiance": "M" },
+      "mini_blocs":   { "valeur": "0.48 × 0.48", "confiance": "M" }
+    },
+    "comportement": "roule sur le sol, gravity flip au tap",
+    "inputs": {
+      "tap": "inverse la gravité (sol ↔ plafond)",
+      "hold": "identique au tap"
+    }
+  },
+
+  "ufo": {
+    "_confiance_global": "M",
+    "_source": "P1kachu + community",
+    "unites_internes": {
+      "vitesse_saut_u_s":  { "valeur": 900,  "confiance": "M", "note": "vy à chaque flap" },
+      "gravite_u_s2":      { "valeur": 2800, "confiance": "M" }
+    },
+    "en_blocs": {
+      "vitesse_saut_bps": { "valeur": 30.0, "confiance": "M", "calcul": "900 / 30" },
+      "gravite_bps2":     { "valeur": 93.3, "confiance": "M", "calcul": "2800 / 30" },
+      "hauteur_flap":     { "valeur": 4.83, "confiance": "M", "calcul": "900² / (2×2800×30)" }
+    },
+    "hitbox": {
+      "normal_blocs": { "valeur": "0.70 × 0.60", "confiance": "M" },
+      "mini_blocs":   { "valeur": "0.42 × 0.36", "confiance": "M" }
+    },
+    "comportement": "chute continue, tap = boost vertical discret",
+    "inputs": {
+      "tap": "boost vertical fixe (900 u/s vers le haut, repart de zéro)",
+      "hold": "identique au tap — 1 input = 1 flap"
+    }
+  },
+
+  "wave": {
+    "_confiance_global": "C",
+    "_source": "P1kachu",
+    "angle_hold_deg":      { "valeur": 45,   "confiance": "C", "note": "45° vers le haut quand maintenu" },
+    "angle_release_deg":   { "valeur": -45,  "confiance": "C", "note": "-45° vers le bas quand relâché" },
+    "vitesse_diagonale": {
+      "_note": "vitesse réelle = vitesse_h / cos(45°) = vitesse_h × √2",
+      "x1_bps":  { "valeur": 14.68, "confiance": "C", "calcul": "10.386 × 1.4142" },
+      "x2_bps":  { "valeur": 18.26, "confiance": "C", "calcul": "12.914 × 1.4142" },
+      "x3_bps":  { "valeur": 22.06, "confiance": "C", "calcul": "15.600 × 1.4142" },
+      "x4_bps":  { "valeur": 27.15, "confiance": "C", "calcul": "19.200 × 1.4142" }
+    },
+    "deplacement_vertical_par_bloc_h": {
+      "_note": "en wave, avancer 1 bloc horizontalement = monter/descendre 1 bloc verticalement (angle 45°)",
+      "ratio": 1.0
+    },
+    "hitbox": {
+      "normal_blocs":   { "valeur": "0.60 × 0.60", "confiance": "M" },
+      "mini_blocs":     { "valeur": "0.36 × 0.36", "confiance": "M" },
+      "_note_critique": "hitbox wave est cruciale pour les passages serrés"
+    },
+    "comportement": "angle fixe ±45°, transition instantanée entre hold et release",
+    "inputs": {
+      "hold":    "+45° — monte en diagonale",
+      "release": "-45° — descend en diagonale"
+    },
+    "calcul_corridor_min": {
+      "formule":  "largeur_min = hitbox + 2 × marge_securite",
+      "note":     "en wave : pour passer dans un corridor de N blocs, besoin hitbox < N blocs"
+    }
+  },
+
+  "robot": {
+    "_confiance_global": "M",
+    "_source": "Community measurements",
+    "comportement": "saut variable selon durée du hold",
+    "sauts": {
+      "tap_bref": {
+        "vitesse_bps": { "valeur": 21.0, "confiance": "M" },
+        "hauteur_blocs": { "valeur": 1.87, "confiance": "M" }
+      },
+      "hold_long": {
+        "vitesse_bps": { "valeur": 35.0, "confiance": "M" },
+        "hauteur_blocs": { "valeur": 5.20, "confiance": "M", "note": "identique au cube normal" }
+      }
+    },
+    "gravite_bps2": { "valeur": 117.77, "confiance": "M", "note": "même que cube" },
+    "hitbox": {
+      "normal_blocs": { "valeur": "0.70 × 0.90", "confiance": "M" }
+    }
+  },
+
+  "spider": {
+    "_confiance_global": "M",
+    "_source": "Community",
+    "comportement": "téléportation instantanée sol↔plafond",
+    "vitesse_teleport": "instantané — 0 frames de transition",
+    "gravite_bps2": { "valeur": 93.3, "confiance": "M", "note": "même que ball" },
+    "hitbox": {
+      "normal_blocs": { "valeur": "0.75 × 0.75", "confiance": "M" }
+    },
+    "inputs": {
+      "tap": "téléporte vers la surface opposée (sol → plafond ou plafond → sol)"
+    }
+  },
+
+  "swing": {
+    "_confiance_global": "E",
+    "_source": "GD 2.2 — données limitées",
+    "comportement": "pendule — gravité alterne avec input",
+    "gravite_bps2": { "valeur": 100.0, "confiance": "E" },
+    "hitbox": {
+      "normal_blocs": { "valeur": "0.70 × 0.55", "confiance": "E" }
+    }
+  },
+
+  "objets": {
+    "blocs_basiques": {
+      "bloc_solide":    { "id": 1,   "confiance": "C" },
+      "spike_sol":      { "id": 8,   "confiance": "C", "note": "spike orienté vers le haut" },
+      "spike_plafond":  { "id": 8,   "confiance": "C", "note": "même ID, rotation 180°, ROTATION:180" },
+      "spike_gauche":   { "id": 8,   "confiance": "C", "note": "rotation 90°, ROTATION:270" },
+      "spike_droite":   { "id": 8,   "confiance": "C", "note": "rotation 270°, ROTATION:90" },
+      "bloc_pente_45":  { "id": 289, "confiance": "M" },
+      "bloc_pente_27":  { "id": 290, "confiance": "M" }
+    },
+    "orbes": {
+      "jaune": { "id": 84,   "confiance": "C", "effet": "saut cube standard, boost ship/wave" },
+      "rose":  { "id": 141,  "confiance": "C", "effet": "saut faible cube (~60%)" },
+      "rouge": { "id": 1333, "confiance": "C", "effet": "rebond inversé (pousse vers l'opposé)" },
+      "bleu":  { "id": 67,   "confiance": "C", "effet": "inverse la gravité instantanément" },
+      "vert":  { "id": 85,   "confiance": "C", "effet": "saute SANS maintenir (force un tap)" },
+      "noir":  { "id": 1594, "confiance": "M", "effet": "GD 2.2 — téléporte au checkpoint" },
+      "blanc": { "id": 1,    "confiance": "E", "note": "vérifier en éditeur" }
+    },
+    "pads": {
+      "jaune": { "id": 35,   "confiance": "C", "effet": "saut automatique cube" },
+      "rose":  { "id": 140,  "confiance": "C", "effet": "saut faible automatique" },
+      "rouge": { "id": 1332, "confiance": "C", "effet": "rebond automatique" },
+      "bleu":  { "id": 99,   "confiance": "C", "effet": "gravity flip automatique" }
+    },
+    "portails_mode": {
+      "cube":    { "id": 12,   "confiance": "C" },
+      "ship":    { "id": 13,   "confiance": "C" },
+      "ball":    { "id": 47,   "confiance": "C" },
+      "ufo":     { "id": 111,  "confiance": "C" },
+      "wave":    { "id": 660,  "confiance": "C" },
+      "robot":   { "id": 745,  "confiance": "C" },
+      "spider":  { "id": 1331, "confiance": "C" },
+      "swing":   { "id": 1933, "confiance": "M", "note": "GD 2.2" }
+    },
+    "portails_vitesse": {
+      "slow_x0_5":   { "id": 200,  "confiance": "C" },
+      "normal_x1":   { "id": 201,  "confiance": "C" },
+      "fast_x2":     { "id": 202,  "confiance": "C" },
+      "faster_x3":   { "id": 203,  "confiance": "C" },
+      "fastest_x4":  { "id": 1334, "confiance": "C" }
+    },
+    "portails_gravite": {
+      "normal":  { "id": 10,  "confiance": "C", "effet": "gravité vers le bas" },
+      "inverse": { "id": 11,  "confiance": "C", "effet": "gravité vers le haut" }
+    },
+    "portails_taille": {
+      "mini":   { "id": 101, "confiance": "C" },
+      "normal": { "id": 99,  "confiance": "C" }
+    }
+  },
+
+  "triggers": {
+    "_note": "Tous les triggers sont invisibles en jeu (layer spéciale)",
+    "color":   { "id": 899,  "confiance": "C", "params": "TARGET_COLOR, R, G, B, DURATION, BLENDING" },
+    "move":    { "id": 901,  "confiance": "C", "params": "TARGET, X, Y, DURATION, EASING" },
+    "alpha":   { "id": 1007, "confiance": "C", "params": "TARGET, ALPHA(0-1), DURATION" },
+    "spawn":   { "id": 1268, "confiance": "C", "params": "TARGET_GROUP, DELAY" },
+    "pulse":   { "id": 1006, "confiance": "C", "params": "TARGET_COLOR ou TARGET_GROUP, R,G,B, FADE_IN, HOLD, FADE_OUT" },
+    "stop":    { "id": 1616, "confiance": "C", "params": "TARGET_GROUP" },
+    "rotate":  { "id": 1346, "confiance": "C", "params": "TARGET, ROTATION_DEGREES, DURATION" },
+    "follow":  { "id": 1347, "confiance": "C", "params": "TARGET, FOLLOW_X, FOLLOW_Y" },
+    "shake":   { "id": 1520, "confiance": "M", "params": "STRENGTH, INTERVAL, DURATION" },
+    "toggle":  { "id": 1049, "confiance": "C", "params": "TARGET, ACTIVATE" },
+    "count":   { "id": 1611, "confiance": "C", "params": "ITEM_ID, COUNT, TARGET_ID" },
+    "instant_count": { "id": 1811, "confiance": "M" },
+    "pickup":  { "id": 1817, "confiance": "M", "params": "ITEM_ID, COUNT" },
+    "touch":   { "id": 1595, "confiance": "M", "params": "TARGET_GROUP, HOLD_MODE, DUAL_MODE" },
+    "animate": { "id": 1585, "confiance": "M", "params": "TARGET_GROUP, ANIMATION_ID" },
+    "keyframe":{ "id": 3032, "confiance": "M", "note": "GD 2.2" },
+    "camera_offset": { "id": 1914, "confiance": "M", "note": "GD 2.2" },
+    "song":    { "id": 1934, "confiance": "M", "note": "GD 2.2 — multi-song" }
+  },
+
+  "formats_objet_raw": {
+    "_description": "Format raw GD pour import direct (.gmd / .lvl)",
+    "structure": "k,v,k,v,...; (clé numérique, valeur, séparés par virgules, objet terminé par ;)",
+    "cles_principales": {
+      "1":   "OBJ_ID — type d'objet",
+      "2":   "X — position horizontale (unités internes, 1 bloc = 30u)",
+      "3":   "Y — position verticale (unités internes)",
+      "4":   "FLIP_X — miroir horizontal (0/1)",
+      "5":   "FLIP_Y — miroir vertical (0/1)",
+      "6":   "ROTATION — rotation en degrés",
+      "21":  "COLOR_1 — ID couleur principale",
+      "22":  "COLOR_2 — ID couleur secondaire",
+      "24":  "Z_LAYER — couche d'affichage",
+      "25":  "Z_ORDER",
+      "41":  "UNKNOWN_41",
+      "57":  "GROUPS — groupes séparés par point-virgule (ex: 57,1;2;3)",
+      "67":  "UNKNOWN_67",
+      "155": "UNKNOWN_155"
+    },
+    "exemple_bloc_simple": "1,1,2,195,3,105;",
+    "exemple_spike":       "1,8,2,645,3,135;",
+    "exemple_orbe_jaune":  "1,84,2,675,3,135;",
+    "exemple_groupe":      "1,1,2,195,3,105,57,21;",
+    "conversion_coordonnees": {
+      "x_raw": "bloc_index × 30 + 195",
+      "y_raw": "rangee × 30 + 105",
+      "sol_y": 105,
+      "bloc_suivant_y": 135,
+      "offset_joueur_x": 195
+    }
+  },
+
+  "couleurs": {
+    "_systeme": "GD utilise des slots de couleur 1-999 + couleurs spéciales",
+    "slots_speciaux": {
+      "1000": "Background",
+      "1001": "Ground (sol)",
+      "1002": "Line (ligne de sol)",
+      "1003": "Object 1 (objets principaux)",
+      "1004": "Object 2",
+      "1005": "Light Background",
+      "1006": "Line 2",
+      "1007": "Object 3",
+      "1010": "Black",
+      "1011": "White",
+      "1012": "Lighter"
+    },
+    "slots_perso": {
+      "1":   "Couleur principale (objets)",
+      "2":   "Couleur secondaire (outlines)",
+      "3":   "Couleur tertiaire",
+      "4":   "Couleur quaternaire"
+    },
+    "projet_vraith": {
+      "bg":    { "slot": 1000, "r": 8,   "g": 8,   "b": 8,   "desc": "noir quasi-pur" },
+      "sol":   { "slot": 1001, "r": 26,  "g": 0,   "b": 0,   "desc": "bordeaux sombre" },
+      "objets":{ "slot": 1,    "r": 200, "g": 162, "b": 0,   "desc": "or" },
+      "outline":{ "slot": 2,   "r": 139, "g": 0,   "b": 0,   "desc": "rouge sang" }
+    }
+  },
+
+  "extreme_demon_design": {
+    "_source": "Analyse Bloodbath, Acu, Zodiac — patterns documentés",
+    "principes": [
+      "Corridor max 2 blocs de hauteur (idéal 1.5)",
+      "Spikes simultanés sol ET plafond",
+      "Faux sol / faux chemin (alpha trigger au dernier moment)",
+      "Orbes en chaîne — 3 orbes en moins de 1 seconde",
+      "Gravity flip surprise (ball/spider/portail inversé)",
+      "Passages wave < 1 bloc de large",
+      "Ship à haute vitesse avec corridors de 1.5 blocs",
+      "Timings à 1/16 de beat ou moins"
+    ],
+    "espacements_dangereux": {
+      "cube_obstacle_gap_blocs": { "x1": 0.9, "x2": 1.1, "x3": 1.3, "note": "gap juste assez pour passer" },
+      "ship_corridor_min_blocs": { "valeur": 1.2, "note": "hitbox ship = 0.75×0.35, corridor 1.2 = très serré" },
+      "wave_passage_min_blocs":  { "valeur": 0.7, "note": "hitbox wave = 0.6, passage 0.7 = pixel-perfect" }
+    },
+    "patterns_signature": {
+      "triple_spike_serré": "3 spikes espacés de 2 blocs à ×2 = 0.52s entre chaque",
+      "orbe_faux_sol": "orbe jaune PUIS sol disparaît PUIS orbe rouge pour rattraper",
+      "wave_zigzag": "alternate hold/release toutes les 0.5 blocs à ×3",
+      "ship_chicane": "serpentin avec corridors 1.5 blocs, plafond/sol décalés",
+      "cube_staircase_piege": "escalier apparent mais spike caché sur marche 3"
+    }
+  },
+
+  "calibration_in_game": {
+    "_description": "Tests à faire dans l'éditeur pour confirmer les valeurs inconnues",
+    "test_cube_hauteur": {
+      "procedure": "Pose un bloc à Y=5 (rangée 5), saute → passes-tu ? (attendu: NON, max ~5.2 blocs)",
+      "procedure2": "Pose un bloc à Y=4 → passes-tu ? (attendu: OUI avec marge)"
+    },
+    "test_ship_corridor": {
+      "procedure": "Crée tunnel horizontal 2 blocs haut, vole dedans → stable ? (attendu: OUI)",
+      "procedure2": "Rétrécis à 1.2 blocs → passe encore ? (limite hitbox)"
+    },
+    "test_wave_passage": {
+      "procedure": "Crée passage de 0.7 blocs, traverse en wave → pixel-perfect ?",
+      "procedure2": "Mesure si mini-wave (0.36 hitbox) passe dans 0.5 blocs"
+    },
+    "test_vitesse_sync": {
+      "procedure": "Place un son au beat 1 et un objet décoratif au beat 2 → décalage visible ?",
+      "note": "Utilise GD Guidelines pour aligner précisément"
+    }
+  }
+}
